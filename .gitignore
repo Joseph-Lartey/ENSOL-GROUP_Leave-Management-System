@@ -1,0 +1,17 @@
+
+# System
+.DS_Store
+
+# Editors
+.vscode/
+
+# Dependencies
+vendor/
+node_modules/
+
+# Config
+.env
+api/config/database.php
+
+# Uploads
+uploads/
