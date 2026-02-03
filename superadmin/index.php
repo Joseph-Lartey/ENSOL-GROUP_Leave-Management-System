@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ENSOL Group Leave Management - SuperAdmin Dashboard">
+    <title>SuperAdmin Dashboard | ENSOL Group Leave Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/superadmin.css">
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-logo">
+                <img src="../assets/ensol_logo.jpg" alt="ENSOL Group">
+            </div>
+
+            <div class="sidebar-nav">
+                <a href="index.php" class="nav-item active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="users.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Users</span>
+                </a>
+                <a href="roles.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Roles</span>
+                </a>
+                <a href="permissions.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Permissions</span>
+                </a>
+                <a href="logs.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Activity Logs</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="../auth/login.php" class="nav-item logout-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <h1 class="page-title">SuperAdmin Dashboard</h1>
+                <div class="header-actions">
+                    <a href="notifications.php" class="notification-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span class="notification-badge"></span>
+                    </a>
+                    <a href="profile.php">
+                        <img src="../assets/img2.jpg" alt="SuperAdmin" class="header-avatar"
+                            onerror="this.src='https://ui-avatars.com/api/?name=SA&background=7c3aed&color=fff'">
+                    </a>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h2 class="welcome-title">Welcome, SuperAdmin!</h2>
+                    <p class="welcome-subtitle">Manage users, roles, and system permissions</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid admin-stats">
+                    <div class="stat-card stat-purple">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none"
+                                stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">TOTAL USERS</span>
+                            <span class="stat-value">156</span>
+                            <span class="stat-sublabel">Active Accounts</span>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-red">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none"
+                                stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">ADMINISTRATORS</span>
+                            <span class="stat-value">5</span>
+                            <span class="stat-sublabel">Admin Roles</span>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-gold">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">HR SUPERVISORS</span>
+                            <span class="stat-value">12</span>
+                            <span class="stat-sublabel">Supervisor Roles</span>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-green">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none"
+                                stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">PENDING REQUESTS</span>
+                            <span class="stat-value">3</span>
+                            <span class="stat-sublabel">Role Changes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <h3
+                    style="margin-bottom: var(--space-4); font-size: var(--text-lg); font-weight: var(--font-weight-semibold);">
+                    Quick Actions</h3>
+                <div class="quick-action-grid">
+                    <a href="users.php" class="quick-action-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <line x1="20" y1="8" x2="20" y2="14"></line>
+                            <line x1="23" y1="11" x2="17" y2="11"></line>
+                        </svg>
+                        <span>Add User</span>
+                    </a>
+                    <a href="roles.php" class="quick-action-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>Manage Roles</span>
+                    </a>
+                    <a href="permissions.php" class="quick-action-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <span>Edit Permissions</span>
+                    </a>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid" style="margin-top: var(--space-6);">
+                    <!-- Role Distribution Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Role Distribution</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <div class="pie-chart"
+                                    style="background: conic-gradient(#7c3aed 0deg 10deg, #dc2626 10deg 22deg, #eab308 22deg 50deg, #2563eb 50deg 360deg);">
+                                </div>
+                                <div class="chart-legend">
+                                    <div class="legend-item">
+                                        <span class="legend-color" style="background: #7c3aed;"></span>
+                                        SuperAdmin (1%)
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color" style="background: #dc2626;"></span>
+                                        Admin (3%)
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color" style="background: #eab308;"></span>
+                                        HR Supervisor (8%)
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color" style="background: #2563eb;"></span>
+                                        User (88%)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activity</h3>
+                            <a href="logs.php" class="card-link">View all</a>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div class="activity-item">
+                                <div class="activity-icon role-change">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text"><strong>John Doe</strong> was promoted to <span
+                                            class="role-badge role-supervisor">HR Supervisor</span></div>
+                                    <div class="activity-time">2 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon user-add">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="8.5" cy="7" r="4"></circle>
+                                        <line x1="20" y1="8" x2="20" y2="14"></line>
+                                        <line x1="23" y1="11" x2="17" y2="11"></line>
+                                    </svg>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text"><strong>Sarah Johnson</strong> was added as a new user
+                                    </div>
+                                    <div class="activity-time">5 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon user-remove">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="8.5" cy="7" r="4"></circle>
+                                        <line x1="23" y1="11" x2="17" y2="11"></line>
+                                    </svg>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text"><strong>Mike Smith</strong>'s admin privileges were
+                                        revoked</div>
+                                    <div class="activity-time">1 day ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/dashboard.js"></script>
+</body>
+
+</html>
