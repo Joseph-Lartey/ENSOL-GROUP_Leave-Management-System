@@ -631,36 +631,48 @@
     gap: var(--space-2);
 }
 
+/* Custom Buttons for My Requests */
 .btn-delete {
-    padding: var(--space-2) var(--space-4);
-    background-color: #fee2e2;
-    color: #dc2626;
+    padding: 8px 16px;
+    background-color: #ef4444; /* Red */
+    color: white;
     border: none;
     border-radius: 8px;
-    font-size: var(--text-sm);
-    font-weight: var(--font-weight-medium);
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s;
 }
 
 .btn-delete:hover {
-    background-color: #fecaca;
+    background-color: #dc2626;
 }
 
 .btn-edit {
-    padding: var(--space-2) var(--space-4);
-    background-color: #f3f4f6;
-    color: var(--jet-black);
+    padding: 8px 24px;
+    background-color: #eab308; /* Yellow/Mustard */
+    color: white; /* Text white as per typical design, or black if easier to read? Image looks white text on yellow */
     border: none;
     border-radius: 8px;
-    font-size: var(--text-sm);
-    font-weight: var(--font-weight-medium);
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s;
 }
 
 .btn-edit:hover {
-    background-color: #e5e7eb;
+    background-color: #ca8a04;
+}
+
+.request-icon-large {
+    width: 40px;
+    height: 40px;
+    background: #1f2937; /* Dark/Black */
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
 }
 
 /* ====== PROFILE PAGE - BETTER DESIGN ====== */

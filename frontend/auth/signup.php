@@ -48,6 +48,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="profileImage" class="form-label" style="display:block; margin-bottom:5px; color:var(--text-light);">Profile Picture (Optional)</label>
+                        <input type="file" id="profileImage" name="profileImage" class="form-input" accept="image/*">
+                    </div>
+
+                    <div class="form-group">
                         <input type="email" id="email" name="email" class="form-input" placeholder="Email" required
                             autocomplete="email">
                     </div>
@@ -116,6 +121,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/auth.js"></script>
 </body>
 

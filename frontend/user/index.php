@@ -115,16 +115,16 @@
                         <span class="notification-badge"></span>
                     </a>
                     <a href="profile.php">
-                        <img src="../assets/img2.jpg" alt="Profile" class="header-avatar">
+                        <img src="../assets/default-avatar.png" alt="Profile" class="header-avatar" onerror="this.src='../assets/default-avatar.png'">
                     </a>
                 </div>
             </header>
 
             <!-- Page Content -->
             <div class="page-content">
-                <!-- Welcome Section - Plain Text -->
+                <!-- Welcome Section -->
                 <div class="welcome-section">
-                    <h2 class="welcome-title">Welcome back, Stephanie!</h2>
+                    <h2 class="welcome-title" id="welcome-message">Welcome back!</h2>
                     <p class="welcome-subtitle">Here's an overview of your leave status</p>
                 </div>
 
@@ -142,7 +142,7 @@
                         </div>
                         <div class="stat-info">
                             <div class="stat-label">Total leave days</div>
-                            <div class="stat-value">45<span class="stat-unit">days</span></div>
+                            <div class="stat-value" id="stat-total-allowed">--<span class="stat-unit">days</span></div>
                         </div>
                     </div>
 
@@ -157,8 +157,8 @@
                             </svg>
                         </div>
                         <div class="stat-info">
-                            <div class="stat-label">Total leave days left</div>
-                            <div class="stat-value">30<span class="stat-unit">days</span></div>
+                            <div class="stat-label">Annual Leave Remaining</div>
+                            <div class="stat-value" id="stat-leave-balance">--<span class="stat-unit">days</span></div>
                         </div>
                     </div>
 
@@ -170,8 +170,8 @@
                             </svg>
                         </div>
                         <div class="stat-info">
-                            <div class="stat-label">Total sick days left</div>
-                            <div class="stat-value">30<span class="stat-unit">days</span></div>
+                            <div class="stat-label">Pending Requests</div>
+                            <div class="stat-value" id="stat-pending-requests">--</div>
                         </div>
                     </div>
                 </div>
@@ -219,42 +219,9 @@
                             <a href="my-requests.php" class="card-link">View all</a>
                         </div>
                         <div class="card-body" style="padding: 0;">
-                            <div class="request-list">
-                                <div class="request-item">
-                                    <div class="request-icon annual">📅</div>
-                                    <div class="request-info">
-                                        <div class="request-type">Annual Leave</div>
-                                        <div class="request-status">HR Approved</div>
-                                    </div>
-                                    <div class="request-date">20.10.2025</div>
-                                </div>
-
-                                <div class="request-item">
-                                    <div class="request-icon annual">📅</div>
-                                    <div class="request-info">
-                                        <div class="request-type">Annual Leave</div>
-                                        <div class="request-status">HR Approved</div>
-                                    </div>
-                                    <div class="request-date">20.10.2025</div>
-                                </div>
-
-                                <div class="request-item">
-                                    <div class="request-icon annual">📅</div>
-                                    <div class="request-info">
-                                        <div class="request-type">Annual Leave</div>
-                                        <div class="request-status">HR Approved</div>
-                                    </div>
-                                    <div class="request-date">20.10.2025</div>
-                                </div>
-
-                                <div class="request-item">
-                                    <div class="request-icon annual">📅</div>
-                                    <div class="request-info">
-                                        <div class="request-type">Annual Leave</div>
-                                        <div class="request-status">Pending</div>
-                                    </div>
-                                    <div class="request-date">20.10.2025</div>
-                                </div>
+                            <div class="request-list" id="dashboard-requests-container">
+                                <!-- Requests will be loaded here dynamically -->
+                                <div style="padding: 20px; text-align: center; color: var(--text-light);">Loading requests...</div>
                             </div>
                         </div>
                     </div>
@@ -274,6 +241,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/dashboard.js"></script>
 </body>
 

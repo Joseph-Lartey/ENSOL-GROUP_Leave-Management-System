@@ -136,7 +136,7 @@
                         </div>
                         <div class="stat-info">
                             <div class="stat-label">Total leave days</div>
-                            <div class="stat-value">45<span class="stat-unit">days</span></div>
+                            <div class="stat-value" id="stat-total-allowed">--<span class="stat-unit">days</span></div>
                         </div>
                     </div>
 
@@ -152,7 +152,7 @@
                         </div>
                         <div class="stat-info">
                             <div class="stat-label">Total leave days left</div>
-                            <div class="stat-value">45<span class="stat-unit">days</span></div>
+                            <div class="stat-value" id="stat-leave-balance">--<span class="stat-unit">days</span></div>
                         </div>
                     </div>
 
@@ -165,7 +165,7 @@
                         </div>
                         <div class="stat-info">
                             <div class="stat-label">Total sick days left</div>
-                            <div class="stat-value">45<span class="stat-unit">days</span></div>
+                            <div class="stat-value" id="stat-sick-balance">--<span class="stat-unit">days</span></div>
                         </div>
                     </div>
                 </div>
@@ -224,6 +224,34 @@
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        // Fetch and display leave balance stats
+        document.addEventListener('DOMContentLoaded', function() {
+            const jwt = localStorage.getItem('token');
+            if (!jwt) return;
+            
+            fetch('../../api/v1/dashboard/stats.php', {
+                headers: { 'Authorization': `Bearer ${jwt}` }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const stats = data.data;
+                    
+                    // Update stat cards
+                    const totalEl = document.getElementById('stat-total-allowed');
+                    if (totalEl) totalEl.innerHTML = `${stats.total_allowed}<span class="stat-unit">days</span>`;
+                    
+                    const balanceEl = document.getElementById('stat-leave-balance');
+                    if (balanceEl) balanceEl.innerHTML = `${stats.leave_balance}<span class="stat-unit">days</span>`;
+                    
+                    const sickEl = document.getElementById('stat-sick-balance');
+                    if (sickEl) sickEl.innerHTML = `${stats.sick_balance || 0}<span class="stat-unit">days</span>`;
+                }
+            })
+            .catch(console.error);
+        });
+    </script>
 </body>
 
 </html>

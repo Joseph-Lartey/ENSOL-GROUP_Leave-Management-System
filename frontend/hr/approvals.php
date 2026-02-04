@@ -149,251 +149,9 @@
 
                 <!-- Approval Cards Grid -->
                 <div class="approval-grid" id="approvalGrid">
-                    <!-- Card 1 -->
-                    <div class="approval-card" data-status="pending">
-                        <div class="approval-card-header">
-                            <span class="clipboard-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
-                                    </path>
-                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                </svg>
-                            </span>
-                            <span class="approval-id">#44231</span>
-                        </div>
-                        <div class="approval-employee">
-                            <img src="../assets/img2.jpg" alt="Employee" class="approval-avatar"
-                                onerror="this.src='https://ui-avatars.com/api/?name=Joseph+Lartey&background=eab308&color=fff&size=50'">
-                            <div class="approval-employee-details">
-                                <div>
-                                    <span class="approval-label">Name</span>
-                                    <span class="approval-name">Joseph Lartey</span>
-                                </div>
-                                <div>
-                                    <span class="approval-label">Department</span>
-                                    <span class="approval-dept">IT</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="approval-dates">
-                            <div>
-                                <span class="date-label">Leave start</span>
-                                <span class="date-value">19/03/2026</span>
-                            </div>
-                            <div>
-                                <span class="date-label">Leave end</span>
-                                <span class="date-value">19/03/2026</span>
-                            </div>
-                        </div>
-                        <div class="approval-actions">
-                            <button class="btn-reject">Reject</button>
-                            <button class="btn-more-info" onclick="openMoreInfoModal()">More Info</button>
-                            <button class="btn-approve">Approve</button>
-                        </div>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="approval-card" data-status="pending">
-                        <div class="approval-card-header">
-                            <span class="clipboard-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
-                                    </path>
-                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                </svg>
-                            </span>
-                            <span class="approval-id">#44232</span>
-                        </div>
-                        <div class="approval-employee">
-                            <img src="../assets/img2.jpg" alt="Employee" class="approval-avatar"
-                                onerror="this.src='https://ui-avatars.com/api/?name=Joseph+Lartey&background=eab308&color=fff&size=50'">
-                            <div class="approval-employee-details">
-                                <div>
-                                    <span class="approval-label">Name</span>
-                                    <span class="approval-name">Joseph Lartey</span>
-                                </div>
-                                <div>
-                                    <span class="approval-label">Department</span>
-                                    <span class="approval-dept">IT</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="approval-dates">
-                            <div>
-                                <span class="date-label">Leave start</span>
-                                <span class="date-value">19/03/2026</span>
-                            </div>
-                            <div>
-                                <span class="date-label">Leave end</span>
-                                <span class="date-value">22/03/2026</span>
-                            </div>
-                        </div>
-                        <div class="approval-actions">
-                            <button class="btn-reject">Reject</button>
-                            <button class="btn-more-info" onclick="openMoreInfoModal()">More Info</button>
-                            <button class="btn-approve">Approve</button>
-                        </div>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="approval-card" data-status="pending">
-                        <div class="approval-card-header">
-                            <span class="clipboard-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
-                                    </path>
-                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                </svg>
-                            </span>
-                            <span class="approval-id">#44233</span>
-                        </div>
-                        <div class="approval-employee">
-                            <img src="../assets/img2.jpg" alt="Employee" class="approval-avatar"
-                                onerror="this.src='https://ui-avatars.com/api/?name=Sarah+Jones&background=eab308&color=fff&size=50'">
-                            <div class="approval-employee-details">
-                                <div>
-                                    <span class="approval-label">Name</span>
-                                    <span class="approval-name">Sarah Jones</span>
-                                </div>
-                                <div>
-                                    <span class="approval-label">Department</span>
-                                    <span class="approval-dept">Finance</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="approval-dates">
-                            <div>
-                                <span class="date-label">Leave start</span>
-                                <span class="date-value">25/03/2026</span>
-                            </div>
-                            <div>
-                                <span class="date-label">Leave end</span>
-                                <span class="date-value">28/03/2026</span>
-                            </div>
-                        </div>
-                        <div class="approval-actions">
-                            <button class="btn-reject">Reject</button>
-                            <button class="btn-more-info" onclick="openMoreInfoModal()">More Info</button>
-                            <button class="btn-approve">Approve</button>
-                        </div>
-                    </div>
-
-                    <!-- Card 4 -->
-                    <div class="approval-card" data-status="pending">
-                        <div class="approval-card-header">
-                            <span class="clipboard-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
-                                    </path>
-                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                </svg>
-                            </span>
-                            <span class="approval-id">#44234</span>
-                        </div>
-                        <div class="approval-employee">
-                            <img src="../assets/img2.jpg" alt="Employee" class="approval-avatar"
-                                onerror="this.src='https://ui-avatars.com/api/?name=Mike+Brown&background=eab308&color=fff&size=50'">
-                            <div class="approval-employee-details">
-                                <div>
-                                    <span class="approval-label">Name</span>
-                                    <span class="approval-name">Mike Brown</span>
-                                </div>
-                                <div>
-                                    <span class="approval-label">Department</span>
-                                    <span class="approval-dept">HR</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="approval-dates">
-                            <div>
-                                <span class="date-label">Leave start</span>
-                                <span class="date-value">01/04/2026</span>
-                            </div>
-                            <div>
-                                <span class="date-label">Leave end</span>
-                                <span class="date-value">05/04/2026</span>
-                            </div>
-                        </div>
-                        <div class="approval-actions">
-                            <button class="btn-reject">Reject</button>
-                            <button class="btn-more-info" onclick="openMoreInfoModal()">More Info</button>
-                            <button class="btn-approve">Approve</button>
-                        </div>
-                    </div>
-
-                    <!-- Accepted Sample 1 -->
-                    <!-- Accepted Sample 1 -->
-                    <div class="approval-card" data-status="accepted" style="display: none;">
-                        <div class="approval-card-header">
-                            <span class="status-badge"
-                                style="background: #dcfce7; color: #16a34a; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">Approved</span>
-                            <span class="approval-id">#44200</span>
-                        </div>
-                        <div class="approval-employee">
-                            <img src="../assets/img2.jpg" alt="Employee" class="approval-avatar"
-                                onerror="this.src='https://ui-avatars.com/api/?name=Emily+Davis&background=22c55e&color=fff&size=50'">
-                            <div class="approval-employee-details">
-                                <div>
-                                    <span class="approval-label">Name</span>
-                                    <span class="approval-name">Emily Davis</span>
-                                </div>
-                                <div>
-                                    <span class="approval-label">Department</span>
-                                    <span class="approval-dept">Marketing</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="approval-dates">
-                            <div>
-                                <span class="date-label">Leave start</span>
-                                <span class="date-value">10/02/2026</span>
-                            </div>
-                            <div>
-                                <span class="date-label">Leave end</span>
-                                <span class="date-value">14/02/2026</span>
-                            </div>
-                        </div>
-                        <div class="approval-actions">
-                            <button class="btn-more-info" onclick="openMoreInfoModal()" style="width: 100%;">More
-                                Info</button>
-                        </div>
-                    </div>
-
-                    <!-- Rejected Sample 1 -->
-                    <div class="approval-card" data-status="rejected" style="display: none;">
-                        <div class="approval-card-header">
-                            <span class="status-badge"
-                                style="background: #fee2e2; color: #dc2626; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">Rejected</span>
-                            <span class="approval-id">#44199</span>
-                        </div>
-                        <div class="approval-employee">
-                            <img src="../assets/img2.jpg" alt="Employee" class="approval-avatar"
-                                onerror="this.src='https://ui-avatars.com/api/?name=Tom+Wilson&background=ef4444&color=fff&size=50'">
-                            <div class="approval-employee-details">
-                                <div>
-                                    <span class="approval-label">Name</span>
-                                    <span class="approval-name">Tom Wilson</span>
-                                </div>
-                                <div>
-                                    <span class="approval-label">Department</span>
-                                    <span class="approval-dept">Sales</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="approval-dates">
-                            <div>
-                                <span class="date-label">Leave start</span>
-                                <span class="date-value">01/02/2026</span>
-                            </div>
-                            <div>
-                                <span class="date-label">Leave end</span>
-                                <span class="date-value">03/02/2026</span>
-                            </div>
-                        </div>
-                        <div class="approval-actions">
-                            <button class="btn-more-info" onclick="openMoreInfoModal()" style="width: 100%;">More
-                                Info</button>
-                        </div>
+                    <!-- Cards will be loaded dynamically -->
+                    <div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--medium-gray);">
+                        Loading pending requests...
                     </div>
                 </div>
             </div>
@@ -412,81 +170,403 @@
                         </button>
                     </div>
                     <div class="employee-modal-content">
-                        <div
-                            style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); text-align: left;">
-                            <div>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">Emergency
-                                    Contact(Name)</span>
-                                <p style="font-weight: 600; margin-top: 4px;">Daniel Ampofo</p>
-                            </div>
-                            <div>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">Emergency
-                                    Contact(Contact)</span>
-                                <p style="font-weight: 600; margin-top: 4px;">0547892376</p>
-                            </div>
-                            <div style="grid-column: 1 / -1;">
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">Reason</span>
-                                <p style="margin-top: 4px; padding: 12px; background: #f9fafb; border-radius: 8px;"></p>
-                            </div>
-                            <div style="grid-column: 1 / -1;">
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">Vacation
-                                    Address</span>
-                                <p style="font-weight: 600; margin-top: 4px;">Shang hai, China</p>
-                            </div>
-                            <div>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">Duties to be covered
-                                    by</span>
-                                <p style="font-weight: 600; margin-top: 4px;">Andrew Jacobs</p>
-                            </div>
-                            <div>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">Job title</span>
-                                <p style="font-weight: 600; margin-top: 4px;">IT Intern</p>
-                            </div>
-                        </div>
+                        <!-- Content loaded dynamically -->
                     </div>
                 </div>
             </div>
 
-            <script>
-                // Tab functionality
-                // Tab functionality
-                const tabs = document.querySelectorAll('.approval-tab');
-                const cards = document.querySelectorAll('.approval-card');
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        const API_BASE = '../../api/v1';
+        const token = localStorage.getItem('token');
+        
+        // Store all requests for filtering
+        let allRequests = {
+            pending: [],
+            accepted: [],
+            rejected: []
+        };
+        
+        // Current selected request for modal
+        let selectedRequest = null;
 
-                tabs.forEach(tab => {
-                    tab.addEventListener('click', function () {
-                        // Activate tab
-                        tabs.forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
+        // Check authentication
+        if (!token) {
+            window.location.href = '../auth/login.php';
+        }
 
-                        const status = this.dataset.tab;
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPendingRequests();
+            initTabs();
+        });
 
-                        // Filter cards
-                        cards.forEach(card => {
-                            if (card.dataset.status === status) {
-                                card.style.display = 'block';
-                            } else {
-                                card.style.display = 'none';
-                            }
-                        });
-                    });
-                });
-
-                // More Info Modal
-                function openMoreInfoModal() {
-                    document.getElementById('moreInfoModal').classList.add('active');
-                }
-
-                function closeMoreInfoModal() {
-                    document.getElementById('moreInfoModal').classList.remove('active');
-                }
-
-                document.getElementById('moreInfoModal').addEventListener('click', function (e) {
-                    if (e.target === this) {
-                        closeMoreInfoModal();
+        // Fetch pending requests from API (requests approved by supervisor)
+        async function loadPendingRequests() {
+            const grid = document.getElementById('approvalGrid');
+            grid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px;">Loading...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/hr/pending.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 });
-            </script>
+                
+                if (response.status === 401) {
+                    window.location.href = '../auth/login.php';
+                    return;
+                }
+                
+                if (response.status === 403) {
+                    grid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #dc2626;">Access denied. HR role required.</div>';
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    allRequests.pending = data.data;
+                    
+                    // Update stat card
+                    const statCard = document.querySelector('.stat-green .stat-value');
+                    if (statCard) {
+                        statCard.textContent = data.count || 0;
+                    }
+                    
+                    renderCards('pending');
+                } else {
+                    grid.innerHTML = `<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #dc2626;">${data.message || 'Failed to load requests'}</div>`;
+                }
+            } catch (error) {
+                console.error('Error loading requests:', error);
+                grid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #dc2626;">Error loading requests. Please try again.</div>';
+            }
+        }
+
+        // Format date for display
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        // Generate avatar URL
+        function getAvatarUrl(name) {
+            const encodedName = encodeURIComponent(name || 'User');
+            return `https://ui-avatars.com/api/?name=${encodedName}&background=eab308&color=fff&size=50`;
+        }
+
+        // Render cards for a specific status
+        function renderCards(status) {
+            const grid = document.getElementById('approvalGrid');
+            const requests = allRequests[status] || [];
+            
+            if (requests.length === 0) {
+                const message = status === 'pending' 
+                    ? 'No pending requests awaiting HR approval.'
+                    : status === 'accepted' 
+                    ? 'No approved requests.'
+                    : 'No rejected requests.';
+                grid.innerHTML = `<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--medium-gray);">${message}</div>`;
+                return;
+            }
+            
+            grid.innerHTML = requests.map(req => createCardHTML(req, status)).join('');
+            
+            // Attach event listeners
+            attachCardListeners();
+        }
+
+        // Create card HTML
+        function createCardHTML(req, status) {
+            const isPending = status === 'pending';
+            const statusBadge = status === 'accepted' 
+                ? '<span class="status-badge" style="background: #dcfce7; color: #16a34a; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">Approved</span>'
+                : status === 'rejected'
+                ? '<span class="status-badge" style="background: #fee2e2; color: #dc2626; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">Rejected</span>'
+                : `<span class="status-badge" style="background: #fef3c7; color: #d97706; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">Supervisor Approved</span>`;
+            
+            return `
+                <div class="approval-card" data-request-id="${req.id}" data-status="${status}">
+                    <div class="approval-card-header">
+                        ${statusBadge}
+                        <span class="approval-id">#${req.id}</span>
+                    </div>
+                    <div class="approval-employee">
+                        <img src="../assets/img2.jpg" alt="Employee" class="approval-avatar"
+                            onerror="this.src='${getAvatarUrl(req.employee_name)}'">
+                        <div class="approval-employee-details">
+                            <div>
+                                <span class="approval-label">Name</span>
+                                <span class="approval-name">${req.employee_name || 'Unknown'}</span>
+                            </div>
+                            <div>
+                                <span class="approval-label">Leave Type</span>
+                                <span class="approval-dept">${req.leave_type || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="approval-dates">
+                        <div>
+                            <span class="date-label">Leave start</span>
+                            <span class="date-value">${formatDate(req.start_date)}</span>
+                        </div>
+                        <div>
+                            <span class="date-label">Leave end</span>
+                            <span class="date-value">${formatDate(req.end_date)}</span>
+                        </div>
+                    </div>
+                    <div class="approval-actions">
+                        ${isPending ? `
+                            <button class="btn-reject" data-id="${req.id}">Reject</button>
+                            <button class="btn-more-info" data-id="${req.id}">More Info</button>
+                            <button class="btn-approve" data-id="${req.id}">Final Approve</button>
+                        ` : `
+                            <button class="btn-more-info" data-id="${req.id}" style="width: 100%;">More Info</button>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Attach event listeners to cards
+        function attachCardListeners() {
+            // Approve buttons
+            document.querySelectorAll('.btn-approve').forEach(btn => {
+                btn.addEventListener('click', () => handleApprove(btn.dataset.id));
+            });
+            
+            // Reject buttons
+            document.querySelectorAll('.btn-reject').forEach(btn => {
+                btn.addEventListener('click', () => handleReject(btn.dataset.id));
+            });
+            
+            // More Info buttons
+            document.querySelectorAll('.btn-more-info').forEach(btn => {
+                btn.addEventListener('click', () => showMoreInfo(btn.dataset.id));
+            });
+        }
+
+        // Handle HR final approve (deducts leave balance)
+        async function handleApprove(requestId) {
+            const request = allRequests.pending.find(r => r.id == requestId);
+            
+            const result = await Swal.fire({
+                title: 'Give Final Approval?',
+                html: `<p>This will <strong>approve</strong> ${request?.employee_name || 'this'}'s leave request and <strong>deduct ${request?.days_requested || 'the'} day(s)</strong> from their leave balance.</p>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#16a34a',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Yes, Final Approve',
+                cancelButtonText: 'Cancel'
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/hr/approve.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ request_id: requestId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Approved!',
+                        text: data.message,
+                        confirmButtonColor: '#16a34a'
+                    });
+                    
+                    // Reload pending requests
+                    loadPendingRequests();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message,
+                        confirmButtonColor: '#dc2626'
+                    });
+                }
+            } catch (error) {
+                console.error('Approve error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to approve request',
+                    confirmButtonColor: '#dc2626'
+                });
+            }
+        }
+
+        // Handle HR reject
+        async function handleReject(requestId) {
+            const request = allRequests.pending.find(r => r.id == requestId);
+            
+            const result = await Swal.fire({
+                title: 'Reject Leave Request?',
+                text: `Please provide a reason for rejection:`,
+                input: 'textarea',
+                inputPlaceholder: 'Reason for rejection...',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Reject',
+                cancelButtonText: 'Cancel',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Please provide a rejection reason';
+                    }
+                }
+            });
+            
+            if (!result.isConfirmed) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/hr/reject.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        request_id: requestId,
+                        reason: result.value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Rejected',
+                        text: data.message,
+                        confirmButtonColor: '#dc2626'
+                    });
+                    
+                    // Reload pending requests
+                    loadPendingRequests();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message,
+                        confirmButtonColor: '#dc2626'
+                    });
+                }
+            } catch (error) {
+                console.error('Reject error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to reject request',
+                    confirmButtonColor: '#dc2626'
+                });
+            }
+        }
+
+        // Show more info modal
+        function showMoreInfo(requestId) {
+            const request = allRequests.pending.find(r => r.id == requestId) ||
+                           allRequests.accepted.find(r => r.id == requestId) ||
+                           allRequests.rejected.find(r => r.id == requestId);
+            
+            if (!request) return;
+            
+            // Update modal content
+            const modal = document.getElementById('moreInfoModal');
+            const content = modal.querySelector('.employee-modal-content');
+            
+            content.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); text-align: left;">
+                    <div>
+                        <span style="font-size: var(--text-xs); color: var(--medium-gray);">Emergency Contact (Name)</span>
+                        <p style="font-weight: 600; margin-top: 4px;">${request.emergency_contact_name || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <span style="font-size: var(--text-xs); color: var(--medium-gray);">Emergency Contact (Phone)</span>
+                        <p style="font-weight: 600; margin-top: 4px;">${request.emergency_contact_phone || 'N/A'}</p>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <span style="font-size: var(--text-xs); color: var(--medium-gray);">Reason / Leave Type</span>
+                        <p style="margin-top: 4px; padding: 12px; background: #f9fafb; border-radius: 8px;">${request.reason || request.leave_type || 'N/A'}</p>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <span style="font-size: var(--text-xs); color: var(--medium-gray);">Vacation Address</span>
+                        <p style="font-weight: 600; margin-top: 4px;">${request.vacation_address || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <span style="font-size: var(--text-xs); color: var(--medium-gray);">Duties covered by</span>
+                        <p style="font-weight: 600; margin-top: 4px;">${request.covered_by || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <span style="font-size: var(--text-xs); color: var(--medium-gray);">Position</span>
+                        <p style="font-weight: 600; margin-top: 4px;">${request.position || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <span style="font-size: var(--text-xs); color: var(--medium-gray);">Days Requested</span>
+                        <p style="font-weight: 600; margin-top: 4px;">${request.days_requested || 'N/A'} days</p>
+                    </div>
+                    <div>
+                        <span style="font-size: var(--text-xs); color: var(--medium-gray);">Submitted</span>
+                        <p style="font-weight: 600; margin-top: 4px;">${formatDate(request.created_at)}</p>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <span style="font-size: var(--text-xs); color: var(--medium-gray);">Supervisor Approved On</span>
+                        <p style="font-weight: 600; margin-top: 4px; color: #16a34a;">${formatDate(request.updated_at)}</p>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeMoreInfoModal() {
+            document.getElementById('moreInfoModal').classList.remove('active');
+        }
+
+        document.getElementById('moreInfoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeMoreInfoModal();
+            }
+        });
+
+        // Tab functionality
+        function initTabs() {
+            const tabs = document.querySelectorAll('.approval-tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const status = this.dataset.tab;
+                    
+                    if (status === 'pending') {
+                        renderCards('pending');
+                    } else if (status === 'accepted') {
+                        // For now, show message - could load from a separate endpoint
+                        document.getElementById('approvalGrid').innerHTML = 
+                            '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--medium-gray);">View approved requests in the history section.</div>';
+                    } else if (status === 'rejected') {
+                        document.getElementById('approvalGrid').innerHTML = 
+                            '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--medium-gray);">View rejected requests in the history section.</div>';
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 
 </html>

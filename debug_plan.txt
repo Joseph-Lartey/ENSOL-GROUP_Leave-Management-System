@@ -1,0 +1,19 @@
+<?php
+// debug_curl.sh
+// This script simulates the curl request the frontend makes
+// Ideally we need a valid JWT. For now let's just create a manual JWT if possible or reuse one?
+// Since we can't easily generate a JWT without the secret, let's bypass auth temporarily in requests.php to test?
+// NO, let's use the login API to get a token first.
+
+echo "1. Getting Token...\n";
+$loginData = json_encode(['email' => 'juconzylartey@gmail.com', 'password' => 'password123']); // Assuming default or known password
+// If password unknown, we might fail here. 
+// Alternative: Modify requests.php to print user ID derived from token even if invalid? No.
+
+// Let's assume we can query the DB.
+// Actually, let's just inspect requests.php again. 
+// Maybe the user is logged in but the token is stale or invalid?
+
+// Let's force a hardcoded User ID in requests.php for a second to see if the browser sees data.
+// If browser sees data with hardcoded ID, then Token/Auth is the issue.
+?>
