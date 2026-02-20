@@ -243,6 +243,112 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        const API_BASE = '../api/v1';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return;
+            }
+            await Promise.all([fetchDashboardStats(), fetchRecentRequests(), fetchProfile()]);
+        });
+
+        async function fetchProfile() {
+            try {
+                const response = await fetch(API_BASE + '/user/profile.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const user = data.user;
+                    document.getElementById('welcome-message').textContent = `Welcome back, ${user.full_name.split(' ')[0]}!`;
+                    if (user.profile_image) {
+                        document.querySelector('.header-avatar').src = '../' + user.profile_image;
+                    }
+                }
+            } catch (err) {
+                console.error('Profile fetch error:', err);
+            }
+        }
+
+        async function fetchDashboardStats() {
+            try {
+                const response = await fetch(API_BASE + '/dashboard/stats.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const s = data.data;
+                    document.getElementById('stat-total-allowed').innerHTML = `${s.total_allowed}<span class="stat-unit">days</span>`;
+                    document.getElementById('stat-leave-balance').innerHTML = `${s.leave_balance}<span class="stat-unit">days</span>`;
+                    document.getElementById('stat-pending-requests').textContent = s.pending_requests;
+                }
+            } catch (err) {
+                console.error('Stats fetch error:', err);
+            }
+        }
+
+        async function fetchRecentRequests() {
+            try {
+                const response = await fetch(API_BASE + '/user/requests.php?limit=5', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                const container = document.getElementById('dashboard-requests-container');
+
+                if (data.status === 'success' && data.data.length > 0) {
+                    container.innerHTML = data.data.map(req => {
+                        const statusClass = req.status.replace('_', '-');
+                        const statusLabel = formatStatus(req.status);
+                        const startDate = new Date(req.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        const endDate = new Date(req.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                        return `
+                            <div class="request-item">
+                                <div class="request-info">
+                                    <div class="request-type">${req.leave_type}</div>
+                                    <div class="request-dates">${startDate} - ${endDate} (${req.duration} days)</div>
+                                </div>
+                                <span class="status-badge ${statusClass}">${statusLabel}</span>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-light);">No leave requests yet. <a href="apply-leave.php">Apply now</a></div>';
+                }
+            } catch (err) {
+                console.error('Requests fetch error:', err);
+                document.getElementById('dashboard-requests-container').innerHTML = 
+                    '<div style="padding: 20px; text-align: center; color: var(--text-light);">Error loading requests.</div>';
+            }
+        }
+
+        function formatStatus(status) {
+            const labels = {
+                'pending': 'Pending',
+                'approved_supervisor': 'Supervisor Approved',
+                'approved_hr': 'Approved',
+                'rejected': 'Rejected',
+                'cancelled': 'Cancelled'
+            };
+            return labels[status] || status.replace('_', ' ');
+        }
+
+        // Logout
+        document.querySelector('.logout-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('logoutModal').classList.add('active');
+        });
+        document.querySelector('.modal-btn.confirm')?.addEventListener('click', () => {
+            localStorage.removeItem('authToken');
+            window.location.href = '../auth/login.php';
+        });
+        document.querySelector('.modal-btn.cancel')?.addEventListener('click', () => {
+            document.getElementById('logoutModal').classList.remove('active');
+        });
+    </script>
 </body>
 
 </html>

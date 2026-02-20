@@ -130,99 +130,114 @@
 
             <!-- Page Content -->
             <div class="page-content">
-                <!-- Notification Toolbar -->
-                <div class="notification-toolbar">
-                    <div class="notification-filters">
-                        <button class="filter-btn active">All</button>
-                        <button class="filter-btn">Unread (2)</button>
-                        <button class="filter-btn">Leave Requests</button>
-                        <button class="filter-btn">System</button>
-                    </div>
-                    <button class="btn-mark-read">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        Mark All Read
-                    </button>
-                </div>
-
-                <!-- Notifications List -->
-                <div class="notification-list">
-                    <!-- Unread Notification (Leave Request) -->
-                    <div class="notification-item unread">
-                        <div class="activity-icon role-change" style="background: #e0f2fe; color: #0284c7;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                <strong style="color: var(--jet-black);">New Leave Request</strong>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">1 hour ago</span>
-                            </div>
-                            <p style="font-size: var(--text-sm); color: var(--medium-gray); margin: 0;">
-                                <strong style="color: #0284c7;">Sarah Jones</strong> has submitted a request for 3 days
-                                of Annual Leave.
-                            </p>
-                            <div style="margin-top: var(--space-3); display: flex; gap: var(--space-2);">
-                                <button class="btn-action" style="background: #0284c7; color: white;">Review</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Unread Notification (System) -->
-                    <div class="notification-item unread">
-                        <div class="activity-icon system">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                <strong style="color: var(--jet-black);">Policy Update</strong>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">4 hours ago</span>
-                            </div>
-                            <p style="font-size: var(--text-sm); color: var(--medium-gray); margin: 0;">
-                                The Annual Leave policy has been updated. Please review the changes in the employee
-                                handbook.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Read Notification -->
-                    <div class="notification-item">
-                        <div class="activity-icon user-add">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                <strong style="color: var(--jet-black);">New Team Member</strong>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">2 days ago</span>
-                            </div>
-                            <p style="font-size: var(--text-sm); color: var(--medium-gray); margin: 0;">
-                                <strong style="color: #0284c7;">Michael Chen</strong> has joined your team as a Junior
-                                Developer.
-                            </p>
-                        </div>
-                    </div>
+                <div class="notification-list" id="notificationList">
+                    <div style="padding: 40px; text-align: center; color: var(--text-light);">Loading notifications...</div>
                 </div>
             </div>
         </main>
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        const API_BASE = '../api/v1';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return;
+            }
+            await Promise.all([fetchNotifications(), fetchProfile()]);
+        });
+
+        async function fetchProfile() {
+            try {
+                const response = await fetch(API_BASE + '/user/profile.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success' && data.user.profile_image) {
+                    document.querySelector('.header-avatar').src = '../' + data.user.profile_image;
+                }
+            } catch (err) {
+                console.error('Profile fetch error:', err);
+            }
+        }
+
+        async function fetchNotifications() {
+            try {
+                const response = await fetch(API_BASE + '/user/notifications.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderNotifications(data.data);
+                    const badge = document.querySelector('.notification-badge');
+                    if (badge) {
+                        badge.textContent = data.unread_count > 0 ? data.unread_count : '';
+                        badge.style.display = data.unread_count > 0 ? 'inline-flex' : 'none';
+                    }
+                } else {
+                    document.getElementById('notificationList').innerHTML = 
+                        '<div style="padding:40px;text-align:center;color:var(--text-light);">Failed to load notifications.</div>';
+                }
+            } catch (err) {
+                console.error('Notifications error:', err);
+                document.getElementById('notificationList').innerHTML = 
+                    '<div style="padding:40px;text-align:center;color:var(--text-light);">Error loading notifications.</div>';
+            }
+        }
+
+        function getIconEmoji(type) {
+            return { 'info': '📣', 'warning': '⏳', 'success': '✓', 'error': '⚠️' }[type] || '📣';
+        }
+
+        function renderNotifications(notifications) {
+            const container = document.getElementById('notificationList');
+            if (!notifications || notifications.length === 0) {
+                container.innerHTML = '<div style="padding:60px 40px;text-align:center;color:var(--text-light);"><p>No notifications yet.</p></div>';
+                return;
+            }
+
+            container.innerHTML = notifications.map(n => `
+                <div class="notification-item ${!n.is_read ? 'unread' : ''}" data-id="${n.id}" style="cursor:pointer;">
+                    <div class="notification-icon ${n.type}">${getIconEmoji(n.type)}</div>
+                    <div class="notification-content">
+                        <div class="notification-title">${n.title}</div>
+                        <div class="notification-message">${n.message}</div>
+                        <div class="notification-time">${n.relative_time}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.querySelectorAll('.notification-item.unread').forEach(item => {
+                item.addEventListener('click', async () => {
+                    try {
+                        await fetch(API_BASE + '/user/notifications.php', {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ id: parseInt(item.dataset.id) })
+                        });
+                        item.classList.remove('unread');
+                        await fetchNotifications();
+                    } catch (err) {
+                        console.error('Mark read error:', err);
+                    }
+                });
+            });
+        }
+
+        // Logout
+        document.querySelector('.logout-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('authToken');
+            window.location.href = '../auth/login.php';
+        });
+    </script>
 </body>
 
 </html>

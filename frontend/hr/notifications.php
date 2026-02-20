@@ -125,77 +125,114 @@
 
             <!-- Page Content -->
             <div class="page-content">
-                <div class="notification-list">
-                    <!-- Unread Notification -->
-                    <div class="notification-item unread">
-                        <div class="notification-icon success">✓</div>
-                        <div class="notification-content">
-                            <div class="notification-title">New Leave Request</div>
-                            <div class="notification-message">Joseph Lartey has submitted a leave request for Feb 15-20,
-                                2026. Requires your approval.</div>
-                            <div class="notification-time">2 hours ago</div>
-                        </div>
-                    </div>
-
-                    <!-- Unread Notification -->
-                    <div class="notification-item unread">
-                        <div class="notification-icon info">📣</div>
-                        <div class="notification-content">
-                            <div class="notification-title">System Update</div>
-                            <div class="notification-message">The leave management system has been updated with new
-                                features. Check the dashboard for details.</div>
-                            <div class="notification-time">5 hours ago</div>
-                        </div>
-                    </div>
-
-                    <!-- Read Notification -->
-                    <div class="notification-item">
-                        <div class="notification-icon warning">⏳</div>
-                        <div class="notification-content">
-                            <div class="notification-title">Pending Approval Reminder</div>
-                            <div class="notification-message">You have 3 pending leave requests awaiting your review.
-                            </div>
-                            <div class="notification-time">1 day ago</div>
-                        </div>
-                    </div>
-
-                    <!-- Read Notification -->
-                    <div class="notification-item">
-                        <div class="notification-icon success">✓</div>
-                        <div class="notification-content">
-                            <div class="notification-title">Leave Request Approved</div>
-                            <div class="notification-message">You approved Sarah Jones's annual leave request for Oct
-                                20-25.</div>
-                            <div class="notification-time">2 days ago</div>
-                        </div>
-                    </div>
-
-                    <!-- Read Notification -->
-                    <div class="notification-item">
-                        <div class="notification-icon info">📅</div>
-                        <div class="notification-content">
-                            <div class="notification-title">Monthly Report Available</div>
-                            <div class="notification-message">The January 2026 leave statistics report is now available
-                                for download.</div>
-                            <div class="notification-time">3 days ago</div>
-                        </div>
-                    </div>
-
-                    <!-- Read Notification -->
-                    <div class="notification-item">
-                        <div class="notification-icon success">✓</div>
-                        <div class="notification-content">
-                            <div class="notification-title">New Employee Added</div>
-                            <div class="notification-message">Mike Brown has been added to the IT department.</div>
-                            <div class="notification-time">1 week ago</div>
-                        </div>
-                    </div>
+                <div class="notification-list" id="notificationList">
+                    <div style="padding: 40px; text-align: center; color: var(--text-light);">Loading notifications...</div>
                 </div>
             </div>
         </main>
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        const API_BASE = '../api/v1';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return;
+            }
+            await Promise.all([fetchNotifications(), fetchProfile()]);
+        });
+
+        async function fetchProfile() {
+            try {
+                const response = await fetch(API_BASE + '/user/profile.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success' && data.user.profile_image) {
+                    document.querySelector('.header-avatar').src = '../' + data.user.profile_image;
+                }
+            } catch (err) {
+                console.error('Profile fetch error:', err);
+            }
+        }
+
+        async function fetchNotifications() {
+            try {
+                const response = await fetch(API_BASE + '/user/notifications.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderNotifications(data.data);
+                    const badge = document.querySelector('.notification-badge');
+                    if (badge) {
+                        badge.textContent = data.unread_count > 0 ? data.unread_count : '';
+                        badge.style.display = data.unread_count > 0 ? 'inline-flex' : 'none';
+                    }
+                } else {
+                    document.getElementById('notificationList').innerHTML = 
+                        '<div style="padding:40px;text-align:center;color:var(--text-light);">Failed to load notifications.</div>';
+                }
+            } catch (err) {
+                console.error('Notifications error:', err);
+                document.getElementById('notificationList').innerHTML = 
+                    '<div style="padding:40px;text-align:center;color:var(--text-light);">Error loading notifications.</div>';
+            }
+        }
+
+        function getIconEmoji(type) {
+            return { 'info': '📣', 'warning': '⏳', 'success': '✓', 'error': '⚠️' }[type] || '📣';
+        }
+
+        function renderNotifications(notifications) {
+            const container = document.getElementById('notificationList');
+            if (!notifications || notifications.length === 0) {
+                container.innerHTML = '<div style="padding:60px 40px;text-align:center;color:var(--text-light);"><p>No notifications yet.</p></div>';
+                return;
+            }
+
+            container.innerHTML = notifications.map(n => `
+                <div class="notification-item ${!n.is_read ? 'unread' : ''}" data-id="${n.id}" style="cursor:pointer;">
+                    <div class="notification-icon ${n.type}">${getIconEmoji(n.type)}</div>
+                    <div class="notification-content">
+                        <div class="notification-title">${n.title}</div>
+                        <div class="notification-message">${n.message}</div>
+                        <div class="notification-time">${n.relative_time}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.querySelectorAll('.notification-item.unread').forEach(item => {
+                item.addEventListener('click', async () => {
+                    try {
+                        await fetch(API_BASE + '/user/notifications.php', {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ id: parseInt(item.dataset.id) })
+                        });
+                        item.classList.remove('unread');
+                        await fetchNotifications();
+                    } catch (err) {
+                        console.error('Mark read error:', err);
+                    }
+                });
+            });
+        }
+
+        // Logout
+        document.querySelector('.logout-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('authToken');
+            window.location.href = '../auth/login.php';
+        });
+    </script>
 </body>
 
 </html>

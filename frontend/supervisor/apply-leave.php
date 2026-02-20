@@ -205,7 +205,132 @@
         </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        const API_BASE = '../api/v1';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return;
+            }
+            await Promise.all([fetchProfile(), loadLeaveTypes()]);
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').min = today;
+            document.getElementById('endDate').min = today;
+
+            document.getElementById('startDate').addEventListener('change', function() {
+                document.getElementById('endDate').min = this.value;
+            });
+        });
+
+        async function fetchProfile() {
+            try {
+                const response = await fetch(API_BASE + '/user/profile.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const user = data.user;
+                    const names = user.full_name.split(' ');
+                    document.getElementById('firstName').value = names[0] || '';
+                    document.getElementById('lastName').value = names.slice(1).join(' ') || '';
+                    if (user.profile_image) {
+                        document.querySelector('.header-avatar').src = '../' + user.profile_image;
+                    }
+                }
+            } catch (err) {
+                console.error('Profile fetch error:', err);
+            }
+        }
+
+        async function loadLeaveTypes() {
+            try {
+                const response = await fetch(API_BASE + '/leaves/types.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const select = document.getElementById('reason');
+                    select.innerHTML = '<option value="" disabled selected>Reason</option>';
+                    data.data.forEach(type => {
+                        const slug = type.name.toLowerCase().replace(/\s+/g, '_').replace('_leave', '');
+                        select.innerHTML += `<option value="${slug}">${type.name} (${type.days_allowed} days)</option>`;
+                    });
+                }
+            } catch (err) {
+                console.error('Leave types error:', err);
+            }
+        }
+
+        document.getElementById('applyLeaveForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            const body = {
+                reason: document.getElementById('reason').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                vacationAddress: document.getElementById('vacationAddress').value,
+                emergencyName: document.getElementById('emergencyName').value,
+                emergencyPhone: document.getElementById('emergencyPhone').value,
+                coveredBy: document.getElementById('coveredBy').value
+            };
+
+            try {
+                const response = await fetch(API_BASE + '/leaves/apply.php', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Application Submitted!',
+                        text: data.message,
+                        confirmButtonColor: '#0284c7'
+                    }).then(() => {
+                        window.location.href = 'my-requests.php';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Submission Failed',
+                        text: data.message,
+                        confirmButtonColor: '#0284c7'
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Unable to submit. Please try again.',
+                    confirmButtonColor: '#0284c7'
+                });
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Application';
+            }
+        });
+
+        // Logout
+        document.querySelector('.logout-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('authToken');
+            window.location.href = '../auth/login.php';
+        });
+    </script>
 </body>
 
 </html>
