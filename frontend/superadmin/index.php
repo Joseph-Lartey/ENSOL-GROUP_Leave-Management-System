@@ -52,15 +52,6 @@
                     </span>
                     <span class="nav-text">Roles</span>
                 </a>
-                <a href="permissions.php" class="nav-item">
-                    <span class="nav-icon">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    </span>
-                    <span class="nav-text">Permissions</span>
-                </a>
                 <a href="logs.php" class="nav-item">
                     <span class="nav-icon">
                         <svg viewBox="0 0 24 24">
@@ -198,12 +189,12 @@
                         </svg>
                         <span>Manage Roles</span>
                     </a>
-                    <a href="permissions.php" class="quick-action-btn">
+                    <a href="logs.php" class="quick-action-btn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
                         </svg>
-                        <span>Edit Permissions</span>
+                        <span>Activity Logs</span>
                     </a>
                 </div>
 
@@ -300,6 +291,162 @@
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        const API_BASE = '../api/v1/superadmin';
+
+        // Verify auth on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return;
+            }
+            await fetchStats();
+            await fetchRecentActivity();
+            await fetchProfile();
+        });
+
+        // Fetch profile for header avatar
+        async function fetchProfile() {
+            try {
+                const response = await fetch('../api/v1/user/profile.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const avatar = document.querySelector('.header-avatar');
+                    if (data.user.profile_image) {
+                        avatar.src = '../' + data.user.profile_image;
+                    }
+                    document.querySelector('.welcome-title').textContent = `Welcome, ${data.user.full_name.split(' ')[0]}!`;
+                }
+            } catch (err) {
+                console.error('Profile fetch error:', err);
+            }
+        }
+
+        // Fetch Dashboard Stats
+        async function fetchStats() {
+            try {
+                const response = await fetch(API_BASE + '/stats.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const stats = data.data;
+                    // Update stat cards
+                    const statCards = document.querySelectorAll('.stat-card');
+                    statCards[0].querySelector('.stat-value').textContent = stats.total_users;
+                    statCards[1].querySelector('.stat-value').textContent = stats.hr_count;
+                    statCards[2].querySelector('.stat-value').textContent = stats.supervisor_count;
+                    statCards[3].querySelector('.stat-value').textContent = stats.pending_requests;
+                    
+                    // Update pie chart dynamically
+                    updatePieChart(stats);
+                }
+            } catch (err) {
+                console.error('Stats fetch error:', err);
+            }
+        }
+
+        function updatePieChart(stats) {
+            const total = stats.total_users || 1;
+            const saPercent = (stats.superadmin_count / total) * 100;
+            const hrPercent = (stats.hr_count / total) * 100;
+            const supPercent = (stats.supervisor_count / total) * 100;
+            const empPercent = (stats.employee_count / total) * 100;
+
+            const saDeg = saPercent * 3.6;
+            const hrDeg = saDeg + (hrPercent * 3.6);
+            const supDeg = hrDeg + (supPercent * 3.6);
+
+            const pieChart = document.querySelector('.pie-chart');
+            if (pieChart) {
+                pieChart.style.background = `conic-gradient(
+                    #7c3aed 0deg ${saDeg}deg,
+                    #dc2626 ${saDeg}deg ${hrDeg}deg, 
+                    #eab308 ${hrDeg}deg ${supDeg}deg,
+                    #2563eb ${supDeg}deg 360deg
+                )`;
+            }
+
+            // Update legend text
+            const legendItems = document.querySelectorAll('.legend-item');
+            legendItems[0].textContent = ` SuperAdmin (${Math.round(saPercent)}%)`;
+            legendItems[0].prepend(legendItems[0].querySelector('.legend-color') || createLegendColor('#7c3aed'));
+            legendItems[1].innerHTML = `<span class="legend-color" style="background: #dc2626;"></span> HR (${Math.round(hrPercent)}%)`;
+            legendItems[2].innerHTML = `<span class="legend-color" style="background: #eab308;"></span> Supervisor (${Math.round(supPercent)}%)`;
+            legendItems[3].innerHTML = `<span class="legend-color" style="background: #2563eb;"></span> Employee (${Math.round(empPercent)}%)`;
+        }
+
+        // Fetch Recent Activity
+        async function fetchRecentActivity() {
+            try {
+                const response = await fetch(API_BASE + '/logs.php?limit=5', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+
+                if (data.status === 'success' && data.data.length > 0) {
+                    const container = document.querySelector('.card-body[style*="padding: 0"]');
+                    container.innerHTML = '';
+                    
+                    data.data.forEach(log => {
+                        const iconClass = log.action_type.replace('_', '-');
+                        container.innerHTML += `
+                            <div class="activity-item">
+                                <div class="activity-icon ${iconClass}">
+                                    ${getActivityIcon(log.action_type)}
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text">${log.details}</div>
+                                    <div class="activity-time">${log.relative_time}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) {
+                console.error('Activity fetch error:', err);
+            }
+        }
+
+        function getActivityIcon(actionType) {
+            const icons = {
+                'role_change': '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>',
+                'user_add': '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>',
+                'user_remove': '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="23" y1="11" x2="17" y2="11"></line></svg>',
+                'login': '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>',
+                'user_update': '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>',
+                'permission_change': '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>'
+            };
+            return icons[actionType] || icons['user_update'];
+        }
+
+        // Logout handler
+        document.querySelector('.logout-item')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Logout?',
+                    text: 'Are you sure you want to logout?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#7c3aed',
+                    confirmButtonText: 'Yes, logout'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.removeItem('authToken');
+                        window.location.href = '../auth/login.php';
+                    }
+                });
+            } else {
+                localStorage.removeItem('authToken');
+                window.location.href = '../auth/login.php';
+            }
+        });
+    </script>
 </body>
 
 </html>

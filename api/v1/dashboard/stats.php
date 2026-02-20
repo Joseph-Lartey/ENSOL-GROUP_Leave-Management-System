@@ -15,11 +15,12 @@ $db = getDBConnection();
 $currentYear = date('Y');
 
 try {
-    // 1. Get Leave Balances
-    // We want the total days remaining across all allocated leave types for the current year
-    $balanceQuery = "SELECT SUM(days_remaining) as total_remaining, SUM(days_allocated) as total_allocated 
-                     FROM leave_balances 
-                     WHERE user_id = :user_id AND year = :year";
+    // 1. Get Annual Leave Balance (Specific)
+    // We want specifically 'Annual Leave' for the main "Total Leave Days" and "Remaining"
+    $balanceQuery = "SELECT lb.days_remaining as total_remaining, lb.days_allocated as total_allocated 
+                     FROM leave_balances lb
+                     JOIN leave_types lt ON lb.leave_type_id = lt.id
+                     WHERE lb.user_id = :user_id AND lb.year = :year AND lt.name = 'Annual Leave'";
     
     $stmt = $db->prepare($balanceQuery);
     $stmt->bindParam(":user_id", $userId);
@@ -62,7 +63,7 @@ try {
     $sickQuery = "SELECT lb.days_remaining 
                   FROM leave_balances lb
                   JOIN leave_types lt ON lb.leave_type_id = lt.id
-                  WHERE lb.user_id = :user_id AND lb.year = :year AND lt.name = 'sick'";
+                  WHERE lb.user_id = :user_id AND lb.year = :year AND lt.name = 'Sick Leave'";
     
     $stmt = $db->prepare($sickQuery);
     $stmt->bindParam(":user_id", $userId);

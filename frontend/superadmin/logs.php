@@ -52,15 +52,6 @@
                     </span>
                     <span class="nav-text">Roles</span>
                 </a>
-                <a href="permissions.php" class="nav-item">
-                    <span class="nav-icon">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    </span>
-                    <span class="nav-text">Permissions</span>
-                </a>
                 <a href="logs.php" class="nav-item active">
                     <span class="nav-icon">
                         <svg viewBox="0 0 24 24">
@@ -112,163 +103,24 @@
                 <!-- Filter Bar -->
                 <div class="filter-bar">
                     <input type="text" class="filter-input" placeholder="Search activity..." id="logSearch">
-                    <select class="filter-select" id="userFilter">
-                        <option value="">All Users</option>
-                        <option value="Joseph Lartey">Joseph Lartey</option>
-                        <option value="Stephanie Mensah">Stephanie Mensah</option>
-                        <option value="John Doe">John Doe</option>
-                    </select>
                     <select class="filter-select" id="actionFilter">
                         <option value="">All Actions</option>
-                        <option value="role-change">Role Changes</option>
-                        <option value="user-add">User Added</option>
-                        <option value="user-remove">User Removed</option>
-                        <option value="permission">Permission Changes</option>
+                        <option value="role_change">Role Changes</option>
+                        <option value="user_add">User Added</option>
+                        <option value="user_remove">User Removed</option>
+                        <option value="user_update">User Updated</option>
+                        <option value="permission_change">Permission Changes</option>
                         <option value="login">Login Activity</option>
+                        <option value="logout">Logout Activity</option>
                     </select>
                     <input type="date" class="filter-input" id="dateFilter">
                 </div>
 
                 <!-- Activity Timeline -->
                 <div class="card">
-                    <div class="card-body">
-                        <div class="date-separator">Today</div>
-
-                        <div class="timeline">
-                            <div class="timeline-item role-change">
-                                <div class="timeline-header">
-                                    <div class="timeline-user">
-                                        <img src="https://ui-avatars.com/api/?name=Joseph+Lartey&background=7c3aed&color=fff"
-                                            alt="User" class="timeline-avatar">
-                                        <div>
-                                            <div class="timeline-name">Joseph Lartey</div>
-                                            <div class="timeline-role">SuperAdmin</div>
-                                        </div>
-                                    </div>
-                                    <div class="timeline-time">2 hours ago</div>
-                                </div>
-                                <div class="timeline-action">
-                                    <span class="action-badge role-change">Role Change</span>
-                                    Promoted <strong>John Doe</strong> from User to HR Supervisor
-                                </div>
-                            </div>
-
-                            <div class="timeline-item user-add">
-                                <div class="timeline-header">
-                                    <div class="timeline-user">
-                                        <img src="https://ui-avatars.com/api/?name=Stephanie+Mensah&background=dc2626&color=fff"
-                                            alt="User" class="timeline-avatar">
-                                        <div>
-                                            <div class="timeline-name">Stephanie Mensah</div>
-                                            <div class="timeline-role">Administrator</div>
-                                        </div>
-                                    </div>
-                                    <div class="timeline-time">5 hours ago</div>
-                                </div>
-                                <div class="timeline-action">
-                                    <span class="action-badge user-add">User Added</span>
-                                    Created new user account for <strong>Sarah Johnson</strong>
-                                </div>
-                            </div>
-
-                            <div class="timeline-item login">
-                                <div class="timeline-header">
-                                    <div class="timeline-user">
-                                        <img src="https://ui-avatars.com/api/?name=Joseph+Lartey&background=7c3aed&color=fff"
-                                            alt="User" class="timeline-avatar">
-                                        <div>
-                                            <div class="timeline-name">Joseph Lartey</div>
-                                            <div class="timeline-role">SuperAdmin</div>
-                                        </div>
-                                    </div>
-                                    <div class="timeline-time">6 hours ago</div>
-                                </div>
-                                <div class="timeline-action">
-                                    <span class="action-badge login">Login</span>
-                                    Logged in from IP <strong>192.168.1.105</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="date-separator">Yesterday</div>
-
-                        <div class="timeline">
-                            <div class="timeline-item user-remove">
-                                <div class="timeline-header">
-                                    <div class="timeline-user">
-                                        <img src="https://ui-avatars.com/api/?name=Joseph+Lartey&background=7c3aed&color=fff"
-                                            alt="User" class="timeline-avatar">
-                                        <div>
-                                            <div class="timeline-name">Joseph Lartey</div>
-                                            <div class="timeline-role">SuperAdmin</div>
-                                        </div>
-                                    </div>
-                                    <div class="timeline-time">1 day ago</div>
-                                </div>
-                                <div class="timeline-action">
-                                    <span class="action-badge user-remove">Privileges Revoked</span>
-                                    Revoked admin privileges from <strong>Mike Smith</strong>
-                                </div>
-                            </div>
-
-                            <div class="timeline-item permission">
-                                <div class="timeline-header">
-                                    <div class="timeline-user">
-                                        <img src="https://ui-avatars.com/api/?name=Joseph+Lartey&background=7c3aed&color=fff"
-                                            alt="User" class="timeline-avatar">
-                                        <div>
-                                            <div class="timeline-name">Joseph Lartey</div>
-                                            <div class="timeline-role">SuperAdmin</div>
-                                        </div>
-                                    </div>
-                                    <div class="timeline-time">1 day ago</div>
-                                </div>
-                                <div class="timeline-action">
-                                    <span class="action-badge permission">Permission Change</span>
-                                    Updated permissions for <strong>HR Supervisor</strong> role - enabled "View team
-                                    reports"
-                                </div>
-                            </div>
-
-                            <div class="timeline-item role-change">
-                                <div class="timeline-header">
-                                    <div class="timeline-user">
-                                        <img src="https://ui-avatars.com/api/?name=Stephanie+Mensah&background=dc2626&color=fff"
-                                            alt="User" class="timeline-avatar">
-                                        <div>
-                                            <div class="timeline-name">Stephanie Mensah</div>
-                                            <div class="timeline-role">Administrator</div>
-                                        </div>
-                                    </div>
-                                    <div class="timeline-time">1 day ago</div>
-                                </div>
-                                <div class="timeline-action">
-                                    <span class="action-badge role-change">Role Change</span>
-                                    Assigned <strong>Emma Wilson</strong> to Finance department
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="date-separator">January 28, 2026</div>
-
-                        <div class="timeline">
-                            <div class="timeline-item login">
-                                <div class="timeline-header">
-                                    <div class="timeline-user">
-                                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=d97706&color=fff"
-                                            alt="User" class="timeline-avatar">
-                                        <div>
-                                            <div class="timeline-name">John Doe</div>
-                                            <div class="timeline-role">HR Supervisor</div>
-                                        </div>
-                                    </div>
-                                    <div class="timeline-time">3 days ago</div>
-                                </div>
-                                <div class="timeline-action">
-                                    <span class="action-badge login">Login</span>
-                                    First login after role upgrade to <strong>HR Supervisor</strong>
-                                </div>
-                            </div>
+                    <div class="card-body" id="logsContainer">
+                        <div style="text-align:center; padding: 40px; color: var(--medium-gray);">
+                            Loading activity logs...
                         </div>
                     </div>
                 </div>
@@ -278,52 +130,154 @@
 
     <script src="../assets/js/dashboard.js"></script>
     <script>
-        // Activity Logs Filtering
-        const logSearch = document.getElementById('logSearch');
-        const userFilter = document.getElementById('userFilter');
-        const actionFilter = document.getElementById('actionFilter');
-        const dateFilter = document.getElementById('dateFilter');
-        const timelineItems = document.querySelectorAll('.timeline-item');
-        const dateSeparators = document.querySelectorAll('.date-separator');
+        const API_BASE = '../api/v1/superadmin';
 
-        function filterLogs() {
-            const searchTerm = logSearch.value.toLowerCase();
-            const selectedUser = userFilter.value.toLowerCase();
-            const selectedAction = actionFilter.value; // Value matches class name
-            const selectedDate = dateFilter.value;
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return;
+            }
+            await fetchLogs();
+            await fetchProfile();
+        });
 
-            timelineItems.forEach(item => {
-                const userName = item.querySelector('.timeline-name').textContent.toLowerCase();
-                const textContent = item.textContent.toLowerCase();
-                const actionBadge = item.querySelector('.action-badge');
-
-                // key logic: check if item has the selected action class
-                const matchesValidAction = selectedAction === '' || actionBadge.classList.contains(selectedAction);
-
-                // Date logic is tricky because date is in a separator or relative time text.
-                // For simplicity in this mock, we might skip exact date filtering matching standard timeline date strings
-                // or just rely on search.
-                // However, matching the "date-separator" requires hierarchy traversal which is complex for this structure.
-                // We will stick to Search, User, and Action.
-
-                const matchesSearch = textContent.includes(searchTerm);
-                const matchesUser = selectedUser === '' || userName.includes(selectedUser);
-                const matchesAction = matchesValidAction;
-
-                if (matchesSearch && matchesUser && matchesAction) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
+        async function fetchProfile() {
+            try {
+                const response = await fetch('../api/v1/user/profile.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success' && data.user.profile_image) {
+                    document.querySelector('.header-avatar').src = '../' + data.user.profile_image;
                 }
-            });
-
-            // Optional: Hide separators if all their children are hidden (requires more complex logic)
+            } catch (err) {
+                console.error('Profile fetch error:', err);
+            }
         }
 
-        logSearch.addEventListener('input', filterLogs);
-        userFilter.addEventListener('change', filterLogs);
-        actionFilter.addEventListener('change', filterLogs);
-        // Date filter is present but logic mocked/omitted for simplicity as dates are relative "2 hours ago" or headings
+        async function fetchLogs() {
+            try {
+                let url = API_BASE + '/logs.php?';
+                const action = document.getElementById('actionFilter').value;
+                const date = document.getElementById('dateFilter').value;
+                const search = document.getElementById('logSearch').value;
+
+                if (action) url += `action=${action}&`;
+                if (date) url += `date=${date}&`;
+                if (search) url += `user=${encodeURIComponent(search)}&`;
+
+                const response = await fetch(url, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderLogs(data.data);
+                } else {
+                    document.getElementById('logsContainer').innerHTML = 
+                        '<div style="text-align:center;padding:40px;color:var(--medium-gray);">Failed to load logs.</div>';
+                }
+            } catch (err) {
+                console.error('Logs fetch error:', err);
+                document.getElementById('logsContainer').innerHTML = 
+                    '<div style="text-align:center;padding:40px;color:var(--medium-gray);">Error loading logs.</div>';
+            }
+        }
+
+        function renderLogs(logs) {
+            const container = document.getElementById('logsContainer');
+
+            if (!logs || logs.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--medium-gray);">No activity logs found.</div>';
+                return;
+            }
+
+            // Group logs by date
+            const grouped = {};
+            logs.forEach(log => {
+                const date = new Date(log.created_at);
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+
+                let dateKey;
+                if (date.toDateString() === today.toDateString()) {
+                    dateKey = 'Today';
+                } else if (date.toDateString() === yesterday.toDateString()) {
+                    dateKey = 'Yesterday';
+                } else {
+                    dateKey = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                }
+
+                if (!grouped[dateKey]) grouped[dateKey] = [];
+                grouped[dateKey].push(log);
+            });
+
+            let html = '';
+            for (const [dateLabel, dateLogs] of Object.entries(grouped)) {
+                html += `<div class="date-separator">${dateLabel}</div>`;
+                html += '<div class="timeline">';
+                dateLogs.forEach(log => {
+                    const iconClass = log.action_type.replace('_', '-');
+                    const badgeText = formatActionType(log.action_type);
+                    const avatarUrl = log.actor?.image 
+                        ? '../' + log.actor.image 
+                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(log.actor?.name || 'U')}&background=7c3aed&color=fff`;
+
+                    html += `
+                        <div class="timeline-item ${iconClass}">
+                            <div class="timeline-header">
+                                <div class="timeline-user">
+                                    <img src="${avatarUrl}" alt="User" class="timeline-avatar">
+                                    <div>
+                                        <div class="timeline-name">${log.actor?.name || 'Unknown'}</div>
+                                        <div class="timeline-role">${log.actor?.role || ''}</div>
+                                    </div>
+                                </div>
+                                <div class="timeline-time">${log.relative_time}</div>
+                            </div>
+                            <div class="timeline-action">
+                                <span class="action-badge ${iconClass}">${badgeText}</span>
+                                ${log.details}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function formatActionType(type) {
+            const labels = {
+                'role_change': 'Role Change',
+                'user_add': 'User Added',
+                'user_remove': 'User Removed',
+                'user_update': 'User Updated',
+                'permission_change': 'Permission Change',
+                'login': 'Login',
+                'logout': 'Logout'
+            };
+            return labels[type] || type.replace('_', ' ');
+        }
+
+        // Filters
+        let searchTimeout;
+        document.getElementById('logSearch').addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(fetchLogs, 300);
+        });
+        document.getElementById('actionFilter').addEventListener('change', fetchLogs);
+        document.getElementById('dateFilter').addEventListener('change', fetchLogs);
+
+        // Logout handler
+        document.querySelector('.logout-item')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('authToken');
+            window.location.href = '../auth/login.php';
+        });
     </script>
 </body>
 

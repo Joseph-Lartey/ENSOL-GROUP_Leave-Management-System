@@ -146,22 +146,22 @@
                     <div class="stat-card stat-green">
                         <div class="stat-info">
                             <span class="stat-label">Pending requests</span>
-                            <span class="stat-value">3</span>
+                            <span class="stat-value" id="statPending">--</span>
                             <span class="stat-sublabel">Your department</span>
                         </div>
                     </div>
                     <div class="stat-card stat-yellow">
                         <div class="stat-info">
-                            <span class="stat-label">Approved this month</span>
-                            <span class="stat-value">5</span>
-                            <span class="stat-sublabel">+2 this week</span>
+                            <span class="stat-label">Approved (Total)</span>
+                            <span class="stat-value" id="statApproved">--</span>
+                            <span class="stat-sublabel">Your department</span>
                         </div>
                     </div>
                     <div class="stat-card stat-red-light">
                         <div class="stat-info">
-                            <span class="stat-label">Rejected this month</span>
-                            <span class="stat-value">1</span>
-                            <span class="stat-sublabel">Reason required</span>
+                            <span class="stat-label">Rejected (Total)</span>
+                            <span class="stat-value" id="statRejected">--</span>
+                            <span class="stat-sublabel">Your department</span>
                         </div>
                     </div>
                 </div>
@@ -226,48 +226,96 @@
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
+            fetchStats();
+            fetchProfile();
             loadPendingRequests();
+            loadHistoryRequests(); // NEW
             initTabs();
         });
+
+        // Fetch Stats
+        async function fetchStats() {
+            try {
+                const response = await fetch(`${API_BASE}/supervisor/stats.php`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    document.getElementById('statPending').textContent = result.data.pending_count;
+                    document.getElementById('statApproved').textContent = result.data.approved_count;
+                    document.getElementById('statRejected').textContent = result.data.rejected_count;
+                }
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        // Fetch Profile for Header
+        async function fetchProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/user/profile.php`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+                if (result.status === 'success' && result.data.profile_image) {
+                    const headerAvatar = document.querySelector('.header-avatar');
+                    if (headerAvatar) {
+                        headerAvatar.src = `../${result.data.profile_image}`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        }
 
         // Fetch pending requests from API
         async function loadPendingRequests() {
             const grid = document.getElementById('approvalGrid');
-            grid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px;">Loading...</div>';
+            // Only show loader if we are on pending tab
+            if(document.querySelector('.approval-tab.active').dataset.tab === 'pending') {
+                 grid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px;">Loading...</div>';
+            }
             
             try {
                 const response = await fetch(`${API_BASE}/supervisor/pending.php`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
-                
-                if (response.status === 401) {
-                    window.location.href = '../auth/login.php';
-                    return;
-                }
-                
-                if (response.status === 403) {
-                    grid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #dc2626;">Access denied. Supervisor role required.</div>';
-                    return;
-                }
-                
                 const data = await response.json();
                 
                 if (data.status === 'success') {
                     allRequests.pending = data.data;
-                    
-                    // Update stat card
                     document.querySelector('.stat-green .stat-value').textContent = data.count || 0;
                     
-                    renderCards('pending');
-                } else {
-                    grid.innerHTML = `<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #dc2626;">${data.message || 'Failed to load requests'}</div>`;
+                    if(document.querySelector('.approval-tab.active').dataset.tab === 'pending') {
+                        renderCards('pending');
+                    }
                 }
             } catch (error) {
                 console.error('Error loading requests:', error);
-                grid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #dc2626;">Error loading requests. Please try again.</div>';
+            }
+        }
+
+        // Fetch History (Accepted/Rejected)
+        async function loadHistoryRequests() {
+            try {
+                const response = await fetch(`${API_BASE}/supervisor/history.php`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Split into accepted (approved_supervisor/approved_hr) and rejected
+                    allRequests.accepted = data.data.filter(r => r.status.includes('approved'));
+                    allRequests.rejected = data.data.filter(r => r.status === 'rejected');
+                    
+                    // If tabs are active, they will auto-refresh on click, but if we are already on a tab...
+                    const activeTab = document.querySelector('.approval-tab.active').dataset.tab;
+                    if(activeTab === 'accepted' || activeTab === 'rejected') {
+                        renderCards(activeTab);
+                    }
+                }
+            } catch(error) {
+                console.error('Error loading history:', error);
             }
         }
 
@@ -576,12 +624,9 @@
                     if (status === 'pending') {
                         renderCards('pending');
                     } else if (status === 'accepted') {
-                        // For now, show message - could load from a separate endpoint
-                        document.getElementById('approvalGrid').innerHTML = 
-                            '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--medium-gray);">Approved requests are forwarded to HR for final approval.</div>';
+                        renderCards('accepted');
                     } else if (status === 'rejected') {
-                        document.getElementById('approvalGrid').innerHTML = 
-                            '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--medium-gray);">No rejected requests to display.</div>';
+                        renderCards('rejected');
                     }
                 });
             });

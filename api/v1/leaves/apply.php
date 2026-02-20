@@ -18,6 +18,7 @@ require_once '../../middleware/AuthMiddleware.php';
 // Authenticate
 $user = AuthMiddleware::authenticate();
 $userId = $user['user_id'];
+$userRole = $user['role'];
 
 // Get Input
 $input = json_decode(file_get_contents("php://input"));
@@ -72,13 +73,21 @@ try {
         exit;
     }
 
-    // Insert Request
+    // Determine initial status based on user role
+    // HR users skip supervisor approval - their requests go directly to HR approval queue
+    // Supervisors also skip supervisor step
+    $initialStatus = 'pending';
+    if (in_array($userRole, ['hr', 'supervisor', 'admin'])) {
+        $initialStatus = 'approved_supervisor';
+    }
+
+    // Insert Request with status
     $query = "INSERT INTO leave_requests 
               (user_id, leave_type_id, start_date, end_date, days_requested, reason, 
-               vacation_address, emergency_contact_name, emergency_contact_phone, covered_by) 
+               vacation_address, emergency_contact_name, emergency_contact_phone, covered_by, status) 
               VALUES 
               (:user, :type, :start, :end, :days, :reason, 
-               :addr, :ename, :ephone, :covered)";
+               :addr, :ename, :ephone, :covered, :status)";
                
     $stmt = $db->prepare($query);
     $stmt->bindParam(":user", $userId);
@@ -91,10 +100,15 @@ try {
     $stmt->bindParam(":ename", $input->emergencyName);
     $stmt->bindParam(":ephone", $input->emergencyPhone);
     $stmt->bindParam(":covered", $input->coveredBy);
+    $stmt->bindParam(":status", $initialStatus);
     
     if ($stmt->execute()) {
         http_response_code(201);
-        echo json_encode(["status" => "success", "message" => "Leave request submitted successfully."]);
+        $message = "Leave request submitted successfully.";
+        if ($initialStatus === 'approved_supervisor') {
+            $message = "Leave request submitted and sent to HR for final approval.";
+        }
+        echo json_encode(["status" => "success", "message" => $message]);
     } else {
         http_response_code(500);
         echo json_encode(["status" => "error", "message" => "Failed to submit request."]);

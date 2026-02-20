@@ -76,6 +76,15 @@
                     </span>
                     <span class="nav-text">Apply Leave</span>
                 </a>
+                <a href="profile.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Profile</span>
+                </a>
             </div>
 
             <div class="sidebar-footer">
@@ -117,25 +126,23 @@
             <div class="page-content">
                 <!-- Reviews Header -->
                 <div class="employee-header">
-                    <h2>All reviews</h2>
+                    <h2>All Leave Reviews</h2>
                     <div class="employee-search">
+                        <select class="filter-dropdown" id="statusFilter"
+                            style="padding: 8px; border-radius: 8px; border: 1px solid #e5e7eb; margin-right: 8px;">
+                            <option value="">All Statuses</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved_supervisor">Supervisor Approved</option>
+                            <option value="approved_hr">HR Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
                         <select class="filter-dropdown" id="deptFilter"
                             style="padding: 8px; border-radius: 8px; border: 1px solid #e5e7eb; margin-right: 8px;">
                             <option value="">All Departments</option>
-                            <option value="IT">IT</option>
-                            <option value="Finance">Finance</option>
-                            <option value="HR">HR</option>
-                            <option value="Marketing">Marketing</option>
-                            <option value="Sales">Sales</option>
                         </select>
                         <select class="filter-dropdown" id="typeFilter"
                             style="padding: 8px; border-radius: 8px; border: 1px solid #e5e7eb; margin-right: 8px;">
                             <option value="">All Leave Types</option>
-                            <option value="Annual">Annual</option>
-                            <option value="Sick">Sick</option>
-                            <option value="Maternity">Maternity</option>
-                            <option value="Study">Study</option>
-                            <option value="Unpaid">Unpaid</option>
                         </select>
                         <input type="text" class="search-input" placeholder="Search by name..." id="reviewSearch">
                     </div>
@@ -145,68 +152,17 @@
                 <table class="reviews-table">
                     <thead>
                         <tr>
-                            <th>EmployeeName</th>
+                            <th>Employee Name</th>
                             <th>Department</th>
-                            <th>Leave type</th>
+                            <th>Leave Type</th>
+                            <th>Dates</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="reviewsTableBody">
                         <tr>
-                            <td>Joseph Lartey</td>
-                            <td>IT</td>
-                            <td>Annual</td>
-                            <td><button class="btn-more-info-table"
-                                    onclick="openReviewModal('Joseph Lartey', 'IT')">More Info</button></td>
-                        </tr>
-                        <tr>
-                            <td>Joseph Lartey</td>
-                            <td>IT</td>
-                            <td>Annual</td>
-                            <td><button class="btn-more-info-table"
-                                    onclick="openReviewModal('Joseph Lartey', 'IT')">More Info</button></td>
-                        </tr>
-                        <tr>
-                            <td>Joseph Lartey</td>
-                            <td>IT</td>
-                            <td>Annual</td>
-                            <td><button class="btn-more-info-table"
-                                    onclick="openReviewModal('Joseph Lartey', 'IT')">More Info</button></td>
-                        </tr>
-                        <tr>
-                            <td>Joseph Lartey</td>
-                            <td>IT</td>
-                            <td>Annual</td>
-                            <td><button class="btn-more-info-table"
-                                    onclick="openReviewModal('Joseph Lartey', 'IT')">More Info</button></td>
-                        </tr>
-                        <tr>
-                            <td>Joseph Lartey</td>
-                            <td>IT</td>
-                            <td>Annual</td>
-                            <td><button class="btn-more-info-table"
-                                    onclick="openReviewModal('Joseph Lartey', 'IT')">More Info</button></td>
-                        </tr>
-                        <tr>
-                            <td>Joseph Lartey</td>
-                            <td>IT</td>
-                            <td>Annual</td>
-                            <td><button class="btn-more-info-table"
-                                    onclick="openReviewModal('Joseph Lartey', 'IT')">More Info</button></td>
-                        </tr>
-                        <tr>
-                            <td>Joseph Lartey</td>
-                            <td>IT</td>
-                            <td>Annual</td>
-                            <td><button class="btn-more-info-table"
-                                    onclick="openReviewModal('Joseph Lartey', 'IT')">More Info</button></td>
-                        </tr>
-                        <tr>
-                            <td>Joseph Lartey</td>
-                            <td>IT</td>
-                            <td>Annual</td>
-                            <td><button class="btn-more-info-table"
-                                    onclick="openReviewModal('Joseph Lartey', 'IT')">More Info</button></td>
+                            <td colspan="6" style="text-align: center; color: #888;">Loading...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -227,57 +183,178 @@
                 </button>
             </div>
             <div class="review-popup-content">
-                <img src="https://ui-avatars.com/api/?name=Collins+Dauda&background=eab308&color=fff&size=80"
-                    alt="Employee" class="review-popup-avatar" id="reviewAvatar">
-                <h3 class="review-popup-name" id="reviewName">Collins Dauda</h3>
-                <p class="employee-modal-info"><strong>Department:</strong> <span id="reviewDept">Finance</span></p>
-                <p class="employee-modal-info"><strong>Email:</strong> <span>dcollins@ensol.comgh</span></p>
-                <p class="employee-modal-info"><strong>Subsidiary:</strong> <span>Southey</span></p>
-
-                <div class="employee-stats" style="margin-top: 24px;">
-                    <div class="employee-stat-card">
-                        <span class="employee-stat-label">Total Leave days</span>
-                        <span class="employee-stat-value">45 <svg class="edit-icon" viewBox="0 0 24 24"
-                                stroke="currentColor" fill="none" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg></span>
-                        <span class="stat-change">+4 In this Month</span>
-                    </div>
-                    <div class="employee-stat-card">
-                        <span class="employee-stat-label">Leave days Left</span>
-                        <span class="employee-stat-value">45 <svg class="edit-icon" viewBox="0 0 24 24"
-                                stroke="currentColor" fill="none" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg></span>
-                        <span class="stat-change">+4 In this Month</span>
-                    </div>
-                    <div class="employee-stat-card">
-                        <span class="employee-stat-label">Sick days</span>
-                        <span class="employee-stat-value">45 <svg class="edit-icon" viewBox="0 0 24 24"
-                                stroke="currentColor" fill="none" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg></span>
-                        <span class="stat-change">+4 In this Month</span>
-                    </div>
+                <img src="" alt="Employee" class="review-popup-avatar" id="reviewAvatar">
+                <h3 class="review-popup-name" id="reviewName">--</h3>
+                <p class="employee-modal-info"><strong>Department:</strong> <span id="reviewDept">--</span></p>
+                <p class="employee-modal-info"><strong>Email:</strong> <span id="reviewEmail">--</span></p>
+                <p class="employee-modal-info"><strong>Company:</strong> <span id="reviewCompany">--</span></p>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #f9fafb; border-radius: 10px;">
+                    <p class="employee-modal-info"><strong>Leave Type:</strong> <span id="reviewLeaveType">--</span></p>
+                    <p class="employee-modal-info"><strong>Dates:</strong> <span id="reviewDates">--</span></p>
+                    <p class="employee-modal-info"><strong>Days Requested:</strong> <span id="reviewDays">--</span></p>
+                    <p class="employee-modal-info"><strong>Reason:</strong> <span id="reviewReason">--</span></p>
+                    <p class="employee-modal-info"><strong>Status:</strong> <span id="reviewStatus" class="status-badge">--</span></p>
+                    <p class="employee-modal-info"><strong>Applied On:</strong> <span id="reviewAppliedOn">--</span></p>
                 </div>
 
-                <div class="review-popup-actions">
-                    <button class="btn-approve">Accept</button>
-                    <button class="btn-reject">Reject</button>
+                <div style="margin-top: 15px; padding: 15px; background: #fff7ed; border-radius: 10px;">
+                    <p class="employee-modal-info"><strong>Emergency Contact:</strong> <span id="reviewEmergency">--</span></p>
+                    <p class="employee-modal-info"><strong>Covered By:</strong> <span id="reviewCoveredBy">--</span></p>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Review Modal Functions
-        function openReviewModal(name, dept) {
-            document.getElementById('reviewName').textContent = name;
-            document.getElementById('reviewDept').textContent = dept;
-            document.getElementById('reviewAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=eab308&color=fff&size=80`;
+        const API_BASE = '../../api/v1';
+        let allReviews = [];
+
+        // Get JWT Token
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const token = getToken();
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return false;
+            }
+            return true;
+        }
+
+        // Format date
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            return new Date(dateStr).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        // Get status badge class
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': '<span class="status-badge pending">Pending</span>',
+                'approved_supervisor': '<span class="status-badge supervisor">Supervisor Approved</span>',
+                'approved_hr': '<span class="status-badge approved">HR Approved</span>',
+                'rejected': '<span class="status-badge rejected">Rejected</span>'
+            };
+            return badges[status] || `<span class="status-badge">${status}</span>`;
+        }
+
+        // Fetch Reviews
+        async function fetchReviews() {
+            try {
+                const response = await fetch(`${API_BASE}/hr/reviews.php`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = '../auth/login.php';
+                    return;
+                }
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    allReviews = result.data;
+                    renderTable(allReviews);
+                    populateFilters(result.filters);
+                }
+            } catch (error) {
+                console.error('Error fetching reviews:', error);
+                document.getElementById('reviewsTableBody').innerHTML = 
+                    '<tr><td colspan="6" style="text-align: center; color: #dc2626;">Failed to load reviews.</td></tr>';
+            }
+        }
+
+        // Populate Filter Dropdowns
+        function populateFilters(filters) {
+            const deptFilter = document.getElementById('deptFilter');
+            const typeFilter = document.getElementById('typeFilter');
+
+            if (filters.departments) {
+                filters.departments.forEach(dept => {
+                    if (dept) {
+                        const option = document.createElement('option');
+                        option.value = dept;
+                        option.textContent = dept;
+                        deptFilter.appendChild(option);
+                    }
+                });
+            }
+
+            if (filters.leave_types) {
+                filters.leave_types.forEach(type => {
+                    if (type) {
+                        const option = document.createElement('option');
+                        option.value = type;
+                        option.textContent = type;
+                        typeFilter.appendChild(option);
+                    }
+                });
+            }
+        }
+
+        // Render Table
+        function renderTable(reviews) {
+            const tbody = document.getElementById('reviewsTableBody');
+
+            if (!reviews || reviews.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #888;">No leave requests found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = reviews.map(review => `
+                <tr>
+                    <td>${review.employee_name || 'Unknown'}</td>
+                    <td>${review.department || 'N/A'}</td>
+                    <td>${review.leave_type || 'N/A'}</td>
+                    <td>${formatDate(review.start_date)} - ${formatDate(review.end_date)}</td>
+                    <td>${getStatusBadge(review.status)}</td>
+                    <td><button class="btn-more-info-table" onclick='openReviewModal(${JSON.stringify(review)})'>More Info</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // Filter Reviews
+        function filterReviews() {
+            const searchTerm = document.getElementById('reviewSearch').value.toLowerCase();
+            const selectedStatus = document.getElementById('statusFilter').value;
+            const selectedDept = document.getElementById('deptFilter').value;
+            const selectedType = document.getElementById('typeFilter').value;
+
+            const filtered = allReviews.filter(review => {
+                const matchesSearch = (review.employee_name || '').toLowerCase().includes(searchTerm);
+                const matchesStatus = !selectedStatus || review.status === selectedStatus;
+                const matchesDept = !selectedDept || review.department === selectedDept;
+                const matchesType = !selectedType || review.leave_type === selectedType;
+                
+                return matchesSearch && matchesStatus && matchesDept && matchesType;
+            });
+
+            renderTable(filtered);
+        }
+
+        // Open Review Modal
+        function openReviewModal(review) {
+            document.getElementById('reviewAvatar').src = 
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(review.employee_name)}&background=dc2626&color=fff&size=80`;
+            document.getElementById('reviewName').textContent = review.employee_name || 'Unknown';
+            document.getElementById('reviewDept').textContent = review.department || 'N/A';
+            document.getElementById('reviewEmail').textContent = review.employee_email || 'N/A';
+            document.getElementById('reviewCompany').textContent = review.company_name || 'N/A';
+            document.getElementById('reviewLeaveType').textContent = review.leave_type || 'N/A';
+            document.getElementById('reviewDates').textContent = 
+                `${formatDate(review.start_date)} - ${formatDate(review.end_date)}`;
+            document.getElementById('reviewDays').textContent = review.days_requested || 'N/A';
+            document.getElementById('reviewReason').textContent = review.reason || 'N/A';
+            document.getElementById('reviewStatus').innerHTML = getStatusBadge(review.status);
+            document.getElementById('reviewAppliedOn').textContent = formatDate(review.created_at);
+            document.getElementById('reviewEmergency').textContent = 
+                review.emergency_contact_name ? `${review.emergency_contact_name} (${review.emergency_contact_phone || 'N/A'})` : 'N/A';
+            document.getElementById('reviewCoveredBy').textContent = review.covered_by || 'N/A';
+
             document.getElementById('reviewModal').classList.add('active');
         }
 
@@ -285,43 +362,64 @@
             document.getElementById('reviewModal').classList.remove('active');
         }
 
-        document.getElementById('reviewModal').addEventListener('click', function (e) {
-            if (e.target === this) {
-                closeReviewModal();
-            }
+        document.getElementById('reviewModal').addEventListener('click', function(e) {
+            if (e.target === this) closeReviewModal();
         });
 
-        // Search and Filter functionality
-        const searchInput = document.getElementById('reviewSearch');
-        const deptFilter = document.getElementById('deptFilter');
-        const typeFilter = document.getElementById('typeFilter');
+        // Event Listeners
+        document.getElementById('reviewSearch').addEventListener('input', filterReviews);
+        document.getElementById('statusFilter').addEventListener('change', filterReviews);
+        document.getElementById('deptFilter').addEventListener('change', filterReviews);
+        document.getElementById('typeFilter').addEventListener('change', filterReviews);
 
-        function filterReviews() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedDept = deptFilter.value.toLowerCase();
-            const selectedType = typeFilter.value.toLowerCase();
-            const rows = document.querySelectorAll('.reviews-table tbody tr');
-
-            rows.forEach(row => {
-                const name = row.cells[0].textContent.toLowerCase();
-                const department = row.cells[1].textContent.toLowerCase();
-                const leaveType = row.cells[2].textContent.toLowerCase();
-
-                const matchesSearch = name.includes(searchTerm);
-                const matchesDept = selectedDept === '' || department.includes(selectedDept);
-                const matchesType = selectedType === '' || leaveType.includes(selectedType);
-
-                if (matchesSearch && matchesDept && matchesType) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+        // Fetch profile for header avatar
+        async function fetchProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/user/profile.php`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.status === 'success' && result.data && result.data.profile_image) {
+                        const headerAvatar = document.querySelector('.header-avatar');
+                        if (headerAvatar) {
+                            headerAvatar.src = `../${result.data.profile_image}`;
+                        }
+                    }
                 }
-            });
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
         }
 
-        searchInput.addEventListener('input', filterReviews);
-        deptFilter.addEventListener('change', filterReviews);
-        typeFilter.addEventListener('change', filterReviews);
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuth()) return;
+            fetchReviews();
+            fetchProfile();
+            
+            // Logout confirmation
+            const logoutBtn = document.querySelector('.logout-item');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Logout',
+                        text: 'Are you sure you want to logout?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc2626',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Yes, logout'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            localStorage.removeItem('token');
+                            window.location.href = '../auth/login.php';
+                        }
+                    });
+                });
+            }
+        });
     </script>
 </body>
 

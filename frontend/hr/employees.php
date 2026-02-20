@@ -76,6 +76,15 @@
                     </span>
                     <span class="nav-text">Apply Leave</span>
                 </a>
+                <a href="profile.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Profile</span>
+                </a>
             </div>
 
             <div class="sidebar-footer">
@@ -122,17 +131,10 @@
                         <select class="filter-dropdown" id="deptFilter"
                             style="padding: 8px; border-radius: 8px; border: 1px solid #e5e7eb; margin-right: 8px;">
                             <option value="">All Departments</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Engineering">Engineering</option>
-                            <option value="Human Resources">Human Resources</option>
-                            <option value="IT">IT</option>
                         </select>
                         <select class="filter-dropdown" id="subFilter"
                             style="padding: 8px; border-radius: 8px; border: 1px solid #e5e7eb; margin-right: 8px;">
-                            <option value="">All Subsidiaries</option>
-                            <option value="Southey">Southey</option>
-                            <option value="Ensol Group">Ensol Group</option>
-                            <option value="Ensol Tech">Ensol Tech</option>
+                            <option value="">All Companies</option>
                         </select>
                         <input type="text" class="search-input" placeholder="Search by name..." id="employeeSearch">
                     </div>
@@ -142,188 +144,16 @@
                 <table class="employee-table">
                     <thead>
                         <tr>
-                            <th>EmployeeName</th>
-                            <th>Subsidiary</th>
+                            <th>Employee Name</th>
+                            <th>Company</th>
                             <th>Department</th>
-                            <th>Status</th>
+                            <th>Role</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="employeesTableBody">
                         <tr>
-                            <td>Collins Dauda</td>
-                            <td>Southey</td>
-                            <td>Finance</td>
-                            <td><span class="status-badge on-leave">on leave</span></td>
-                            <td class="table-actions">
-                                <button class="action-btn delete" title="Delete">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="action-btn view"
-                                    onclick="openEmployeeModal('Collins Dauda', 'Finance', 'dcollins@ensol.comgh', 'Southey')"
-                                    title="View Details">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Collins Dauda</td>
-                            <td>Southey</td>
-                            <td>Finance</td>
-                            <td><span class="status-badge on-leave">on leave</span></td>
-                            <td class="table-actions">
-                                <button class="action-btn delete" title="Delete">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="action-btn view"
-                                    onclick="openEmployeeModal('Collins Dauda', 'Finance', 'dcollins@ensol.comgh', 'Southey')"
-                                    title="View Details">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Darwin Wood</td>
-                            <td>Ensol Group</td>
-                            <td>Finance</td>
-                            <td><span class="status-badge present">Present</span></td>
-                            <td class="table-actions">
-                                <button class="action-btn delete" title="Delete">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="action-btn view"
-                                    onclick="openEmployeeModal('Darwin Wood', 'Finance', 'dwood@ensol.comgh', 'Ensol Group')"
-                                    title="View Details">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Collins Dauda</td>
-                            <td>Southey</td>
-                            <td>Finance</td>
-                            <td><span class="status-badge on-leave">on leave</span></td>
-                            <td class="table-actions">
-                                <button class="action-btn delete" title="Delete">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="action-btn view"
-                                    onclick="openEmployeeModal('Collins Dauda', 'Finance', 'dcollins@ensol.comgh', 'Southey')"
-                                    title="View Details">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Collins Dauda</td>
-                            <td>Southey</td>
-                            <td>Finance</td>
-                            <td><span class="status-badge on-leave">on leave</span></td>
-                            <td class="table-actions">
-                                <button class="action-btn delete" title="Delete">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="action-btn view"
-                                    onclick="openEmployeeModal('Collins Dauda', 'Finance', 'dcollins@ensol.comgh', 'Southey')"
-                                    title="View Details">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Darwin Wood</td>
-                            <td>Ensol Group</td>
-                            <td>Finance</td>
-                            <td><span class="status-badge present">Present</span></td>
-                            <td class="table-actions">
-                                <button class="action-btn delete" title="Delete">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="action-btn view"
-                                    onclick="openEmployeeModal('Darwin Wood', 'Finance', 'dwood@ensol.comgh', 'Ensol Group')"
-                                    title="View Details">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Collins Dauda</td>
-                            <td>Southey</td>
-                            <td>Finance</td>
-                            <td><span class="status-badge on-leave">on leave</span></td>
-                            <td class="table-actions">
-                                <button class="action-btn delete" title="Delete">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                    </svg>
-                                </button>
-                                <button class="action-btn view"
-                                    onclick="openEmployeeModal('Collins Dauda', 'Finance', 'dcollins@ensol.comgh', 'Southey')"
-                                    title="View Details">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                                        stroke-width="2">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                    </svg>
-                                </button>
-                            </td>
+                            <td colspan="5" style="text-align: center; color: #888;">Loading...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -344,56 +174,160 @@
                 </button>
             </div>
             <div class="employee-modal-content">
-                <img src="https://ui-avatars.com/api/?name=Collins+Dauda&background=eab308&color=fff&size=100"
-                    alt="Employee" class="employee-modal-avatar" id="modalAvatar">
-                <h3 class="employee-modal-name" id="modalName">Collins Dauda</h3>
-                <p class="employee-modal-info"><strong>Department:</strong> <span id="modalDept">Finance</span></p>
-                <p class="employee-modal-info"><strong>Email:</strong> <span id="modalEmail">dcollins@ensol.comgh</span>
-                </p>
-                <p class="employee-modal-info"><strong>Subsidiary:</strong> <span id="modalSubsidiary">Southey</span>
-                </p>
-
-                <div class="employee-stats">
-                    <div class="employee-stat-card">
-                        <span class="employee-stat-label">Total Leave days</span>
-                        <span class="employee-stat-value">45 <svg class="edit-icon" viewBox="0 0 24 24"
-                                stroke="currentColor" fill="none" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg></span>
-                        <span class="stat-change">+4 In this Month</span>
-                    </div>
-                    <div class="employee-stat-card">
-                        <span class="employee-stat-label">Leave days Left</span>
-                        <span class="employee-stat-value">45 <svg class="edit-icon" viewBox="0 0 24 24"
-                                stroke="currentColor" fill="none" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg></span>
-                        <span class="stat-change">+4 In this Month</span>
-                    </div>
-                    <div class="employee-stat-card">
-                        <span class="employee-stat-label">Sick days</span>
-                        <span class="employee-stat-value">45 <svg class="edit-icon" viewBox="0 0 24 24"
-                                stroke="currentColor" fill="none" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg></span>
-                        <span class="stat-change">+4 In this Month</span>
-                    </div>
-                </div>
+                <img src="" alt="Employee" class="employee-modal-avatar" id="modalAvatar">
+                <h3 class="employee-modal-name" id="modalName">--</h3>
+                <p class="employee-modal-info"><strong>Position:</strong> <span id="modalPosition">--</span></p>
+                <p class="employee-modal-info"><strong>Department:</strong> <span id="modalDept">--</span></p>
+                <p class="employee-modal-info"><strong>Email:</strong> <span id="modalEmail">--</span></p>
+                <p class="employee-modal-info"><strong>Phone:</strong> <span id="modalPhone">--</span></p>
+                <p class="employee-modal-info"><strong>Company:</strong> <span id="modalCompany">--</span></p>
+                <p class="employee-modal-info"><strong>Role:</strong> <span id="modalRole">--</span></p>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Employee Modal Functions
-        function openEmployeeModal(name, dept, email, subsidiary) {
-            document.getElementById('modalName').textContent = name;
-            document.getElementById('modalDept').textContent = dept;
-            document.getElementById('modalEmail').textContent = email;
-            document.getElementById('modalSubsidiary').textContent = subsidiary;
-            document.getElementById('modalAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=eab308&color=fff&size=100`;
+        const API_BASE = '../../api/v1';
+        let allEmployees = [];
+
+        // Get JWT Token
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const token = getToken();
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return false;
+            }
+            return true;
+        }
+
+        // Fetch Employees from API
+        async function fetchEmployees() {
+            try {
+                const response = await fetch(`${API_BASE}/hr/employees.php`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = '../auth/login.php';
+                    return;
+                }
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    allEmployees = result.data;
+                    renderTable(allEmployees);
+                    populateFilters(result.filters);
+                }
+            } catch (error) {
+                console.error('Error fetching employees:', error);
+                document.getElementById('employeesTableBody').innerHTML = 
+                    '<tr><td colspan="5" style="text-align: center; color: #dc2626;">Failed to load employees.</td></tr>';
+            }
+        }
+
+        // Populate Filter Dropdowns
+        function populateFilters(filters) {
+            const deptFilter = document.getElementById('deptFilter');
+            const subFilter = document.getElementById('subFilter');
+
+            if (filters.departments) {
+                filters.departments.forEach(dept => {
+                    if (dept) {
+                        const option = document.createElement('option');
+                        option.value = dept;
+                        option.textContent = dept;
+                        deptFilter.appendChild(option);
+                    }
+                });
+            }
+
+            if (filters.companies) {
+                filters.companies.forEach(company => {
+                    if (company) {
+                        const option = document.createElement('option');
+                        option.value = company;
+                        option.textContent = company;
+                        subFilter.appendChild(option);
+                    }
+                });
+            }
+        }
+
+        // Get role badge
+        function getRoleBadge(role) {
+            const badges = {
+                'user': '<span class="status-badge" style="background: #e0f2fe; color: #0284c7;">Employee</span>',
+                'supervisor': '<span class="status-badge" style="background: #fef9c3; color: #ca8a04;">Supervisor</span>',
+                'hr': '<span class="status-badge" style="background: #fee2e2; color: #dc2626;">HR</span>',
+                'admin': '<span class="status-badge" style="background: #dcfce7; color: #16a34a;">Admin</span>'
+            };
+            return badges[role] || `<span class="status-badge">${role}</span>`;
+        }
+
+        // Render Table
+        function renderTable(employees) {
+            const tbody = document.getElementById('employeesTableBody');
+
+            if (!employees || employees.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #888;">No employees found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = employees.map(emp => `
+                <tr>
+                    <td>${emp.full_name || 'Unknown'}</td>
+                    <td>${emp.company_name || 'N/A'}</td>
+                    <td>${emp.department_name || 'N/A'}</td>
+                    <td>${getRoleBadge(emp.role)}</td>
+                    <td class="table-actions">
+                        <button class="action-btn view" onclick='openEmployeeModal(${JSON.stringify(emp)})' title="View Details">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Filter Employees
+        function filterEmployees() {
+            const searchTerm = document.getElementById('employeeSearch').value.toLowerCase();
+            const selectedDept = document.getElementById('deptFilter').value;
+            const selectedCompany = document.getElementById('subFilter').value;
+
+            const filtered = allEmployees.filter(emp => {
+                const matchesSearch = (emp.full_name || '').toLowerCase().includes(searchTerm);
+                const matchesDept = !selectedDept || emp.department_name === selectedDept;
+                const matchesCompany = !selectedCompany || emp.company_name === selectedCompany;
+                
+                return matchesSearch && matchesDept && matchesCompany;
+            });
+
+            renderTable(filtered);
+        }
+
+        // Open Employee Modal
+        function openEmployeeModal(emp) {
+            const avatarUrl = emp.profile_image 
+                ? `../../${emp.profile_image}` 
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.full_name)}&background=dc2626&color=fff&size=100`;
+            
+            document.getElementById('modalAvatar').src = avatarUrl;
+            document.getElementById('modalName').textContent = emp.full_name || 'Unknown';
+            document.getElementById('modalPosition').textContent = emp.position || 'N/A';
+            document.getElementById('modalDept').textContent = emp.department_name || 'N/A';
+            document.getElementById('modalEmail').textContent = emp.email || 'N/A';
+            document.getElementById('modalPhone').textContent = emp.phone || 'N/A';
+            document.getElementById('modalCompany').textContent = emp.company_name || 'N/A';
+            document.getElementById('modalRole').textContent = (emp.role || 'user').charAt(0).toUpperCase() + (emp.role || 'user').slice(1);
+            
             document.getElementById('employeeModal').classList.add('active');
         }
 
@@ -401,44 +335,64 @@
             document.getElementById('employeeModal').classList.remove('active');
         }
 
-        // Close modal on overlay click
-        document.getElementById('employeeModal').addEventListener('click', function (e) {
-            if (e.target === this) {
-                closeEmployeeModal();
-            }
+        document.getElementById('employeeModal').addEventListener('click', function(e) {
+            if (e.target === this) closeEmployeeModal();
         });
 
-        // Search and Filter functionality
-        const searchInput = document.getElementById('employeeSearch');
-        const deptFilter = document.getElementById('deptFilter');
-        const subFilter = document.getElementById('subFilter');
-
-        function filterEmployees() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedDept = deptFilter.value.toLowerCase();
-            const selectedSub = subFilter.value.toLowerCase();
-            const rows = document.querySelectorAll('.employee-table tbody tr');
-
-            rows.forEach(row => {
-                const name = row.cells[0].textContent.toLowerCase();
-                const subsidiary = row.cells[1].textContent.toLowerCase();
-                const department = row.cells[2].textContent.toLowerCase();
-
-                const matchesSearch = name.includes(searchTerm);
-                const matchesDept = selectedDept === '' || department.includes(selectedDept);
-                const matchesSub = selectedSub === '' || subsidiary.includes(selectedSub);
-
-                if (matchesSearch && matchesDept && matchesSub) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+        // Fetch and update profile image in header
+        async function fetchProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/user/profile.php`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.status === 'success' && result.data) {
+                        const headerAvatar = document.querySelector('.header-avatar');
+                        if (headerAvatar && result.data.profile_image) {
+                            headerAvatar.src = `../${result.data.profile_image}`;
+                        }
+                    }
                 }
-            });
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
         }
 
-        searchInput.addEventListener('input', filterEmployees);
-        deptFilter.addEventListener('change', filterEmployees);
-        subFilter.addEventListener('change', filterEmployees);
+        // Event Listeners
+        document.getElementById('employeeSearch').addEventListener('input', filterEmployees);
+        document.getElementById('deptFilter').addEventListener('change', filterEmployees);
+        document.getElementById('subFilter').addEventListener('change', filterEmployees);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuth()) return;
+            fetchEmployees();
+            fetchProfile();
+            
+            // Logout confirmation
+            const logoutBtn = document.querySelector('.logout-item');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Logout',
+                        text: 'Are you sure you want to logout?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc2626',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Yes, logout'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            localStorage.removeItem('token');
+                            window.location.href = '../auth/login.php';
+                        }
+                    });
+                });
+            }
+        });
     </script>
 </body>
 

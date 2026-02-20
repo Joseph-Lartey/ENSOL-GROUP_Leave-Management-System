@@ -133,9 +133,9 @@
                 <div class="profile-card">
                     <div class="profile-top">
                         <div class="profile-photo-column">
-                            <img src="../assets/img2.jpg" alt="Supervisor" class="profile-photo">
-                            <h2 class="profile-name">Jane Smith</h2>
-                            <p class="profile-role">IT Supervisor</p>
+                            <img src="../assets/default-avatar.png" alt="Profile" class="profile-photo">
+                            <h2 class="profile-name user-name">Loading...</h2>
+                            <p class="profile-role user-role">Supervisor</p>
                         </div>
 
                         <div class="profile-details-column">
@@ -143,35 +143,38 @@
 
                             <div class="profile-field">
                                 <span class="profile-label">Name</span>
-                                <span class="profile-value">Jane Smith</span>
+                                <span class="profile-value user-name">--</span>
                             </div>
 
                             <div class="profile-field">
                                 <span class="profile-label">Role</span>
-                                <span class="profile-value">IT Supervisor</span>
+                                <span class="profile-value user-role">--</span>
                             </div>
 
                             <div class="profile-field">
                                 <span class="profile-label">Department</span>
-                                <span class="profile-value">Information Technology</span>
+                                <span class="profile-value user-department">--</span>
                             </div>
 
                             <div class="profile-field">
                                 <span class="profile-label">Email</span>
-                                <span class="profile-value">jane.smith@ensol.com</span>
+                                <span class="profile-value user-email">--</span>
                             </div>
 
                             <div class="profile-field">
                                 <span class="profile-label">Phone</span>
-                                <span class="profile-value">+233 20 987 6543</span>
+                                <span class="profile-value user-phone">Not Set</span>
                             </div>
 
                             <div class="profile-field">
                                 <span class="profile-label">Subsidiary</span>
-                                <span class="profile-value">Ensol Tech</span>
+                                <span class="profile-value user-subsidiary">--</span>
                             </div>
 
-                            <button class="edit-profile-btn" onclick="openEditModal()">Edit Profile</button>
+                            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                <button class="edit-profile-btn" onclick="openEditModal()">Edit Profile</button>
+                                <button class="edit-profile-btn" onclick="openPasswordModal()" style="background-color: #ef4444;">Change Password</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -202,31 +205,23 @@
         <div class="modal-content" style="max-width: 500px; text-align: left;">
             <h2 class="modal-title" style="text-align: center;">Edit Profile</h2>
             <form id="editProfileForm">
+                <div style="margin-bottom: 16px; text-align: center;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Profile Image</label>
+                    <input type="file" id="editProfileImage" accept="image/*" style="font-size: 14px;">
+                </div>
                 <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Name</label>
-                    <input type="text" value="Jane Smith"
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">First Name</label>
+                    <input type="text" id="editFirstName" required
+                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Last Name</label>
+                    <input type="text" id="editLastName" required
                         style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
                 </div>
                 <div style="margin-bottom: 16px;">
                     <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Phone</label>
-                    <input type="tel" value="+233 20 987 6543"
-                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
-                </div>
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Email</label>
-                    <input type="email" value="jane.smith@ensol.com"
-                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
-                </div>
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Role (Request
-                        Change)</label>
-                    <input type="text" value="IT Supervisor" readonly
-                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px; background-color: #f9f9f9; color: #999; cursor: not-allowed;"
-                        title="Role changes must be requested from Admin">
-                </div>
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Subsidiary</label>
-                    <input type="text" value="Ensol Tech"
+                    <input type="tel" id="editPhone"
                         style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
                 </div>
                 <div class="modal-actions" style="margin-top: 24px;">
@@ -237,9 +232,68 @@
         </div>
     </div>
 
+    <!-- Change Password Modal -->
+    <div class="modal-overlay" id="passwordModal">
+        <div class="modal-content" style="max-width: 400px; text-align: left;">
+            <h2 class="modal-title" style="text-align: center;">Change Password</h2>
+            <form id="changePasswordForm">
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Current Password</label>
+                    <input type="password" id="currentPassword" required
+                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">New Password</label>
+                    <input type="password" id="newPassword" required
+                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" required
+                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
+                </div>
+                <div class="modal-actions" style="margin-top: 24px;">
+                    <button type="button" class="modal-btn cancel" onclick="closePasswordModal()">Cancel</button>
+                    <button type="submit" class="modal-btn confirm">Update Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../assets/js/dashboard.js"></script>
     <script>
+        // Extended Profile Management
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if(token) {
+                // Fetch full profile details including phone/subsidiary which default dashboard.js might miss
+                fetch('../../api/v1/user/profile.php', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                .then(r => r.json())
+                .then(res => {
+                    if(res.status === 'success') {
+                        const u = res.data;
+                        // Fill extra fields
+                        document.querySelectorAll('.user-department').forEach(el => el.textContent = u.department || 'Not Set');
+                        document.querySelectorAll('.user-phone').forEach(el => el.textContent = u.phone_number || 'Not Set');
+                        document.querySelectorAll('.user-subsidiary').forEach(el => el.textContent = u.subsidiary || 'Not Set');
+                        
+                        // Store for edit form
+                        localStorage.setItem('full_profile', JSON.stringify(u));
+                    }
+                });
+            }
+        });
+
         function openEditModal() {
+            const user = JSON.parse(localStorage.getItem('full_profile') || '{}');
+            const names = (user.full_name || '').split(' ');
+            
+            document.getElementById('editFirstName').value = names[0] || '';
+            document.getElementById('editLastName').value = names.slice(1).join(' ') || '';
+            document.getElementById('editPhone').value = user.phone_number || '';
+            
             document.getElementById('editProfileModal').classList.add('active');
         }
 
@@ -249,8 +303,75 @@
 
         document.getElementById('editProfileForm').addEventListener('submit', function (e) {
             e.preventDefault();
-            alert('Profile updated successfully!');
-            closeEditModal();
+            
+            const formData = new FormData();
+            formData.append('firstName', document.getElementById('editFirstName').value);
+            formData.append('lastName', document.getElementById('editLastName').value);
+            formData.append('phone', document.getElementById('editPhone').value);
+            
+            const fileInput = document.getElementById('editProfileImage');
+            if(fileInput.files[0]) {
+                formData.append('profileImage', fileInput.files[0]);
+            }
+
+            const token = localStorage.getItem('token');
+            
+            fetch('../../api/v1/user/profile.php', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }, // Verify if FormData needs content-type header removed? Yes, fetch handles it.
+                body: formData
+            })
+            .then(r => r.json())
+            .then(res => {
+                if(res.status === 'success') {
+                    alert('Profile updated successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + res.message);
+                }
+            })
+            .catch(err => alert('Update failed.'));
+        });
+
+        // Password Modal
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('active');
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('active');
+        }
+
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const cur = document.getElementById('currentPassword').value;
+            const newP = document.getElementById('newPassword').value;
+            const conf = document.getElementById('confirmPassword').value;
+
+            if(newP !== conf) {
+                alert('New passwords do not match');
+                return;
+            }
+
+            const token = localStorage.getItem('token');
+            fetch('../../api/v1/user/change-password.php', {
+                method: 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify({ current_password: cur, new_password: newP })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if(res.status === 'success') {
+                    alert('Password changed successfully');
+                    closePasswordModal();
+                    document.getElementById('changePasswordForm').reset();
+                } else {
+                    alert('Error: ' + res.message);
+                }
+            });
         });
     </script>
 </body>

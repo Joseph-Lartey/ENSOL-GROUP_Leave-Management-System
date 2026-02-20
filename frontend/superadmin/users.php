@@ -52,15 +52,6 @@
                     </span>
                     <span class="nav-text">Roles</span>
                 </a>
-                <a href="permissions.php" class="nav-item">
-                    <span class="nav-icon">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    </span>
-                    <span class="nav-text">Permissions</span>
-                </a>
                 <a href="logs.php" class="nav-item">
                     <span class="nav-icon">
                         <svg viewBox="0 0 24 24">
@@ -398,76 +389,295 @@
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Update role select styling when changed
-        function updateRoleStyle(select) {
-            // Remove all role classes
-            select.classList.remove('superadmin', 'admin', 'supervisor', 'user');
-            // Add new role class
-            select.classList.add(select.value);
+        const API_BASE = '../api/v1/superadmin';
+        let usersData = [];
 
-            // Get user name from the row
-            const row = select.closest('tr');
-            const userName = row.querySelector('.user-name').textContent;
-            const roleName = select.options[select.selectedIndex].text;
+        // Verify auth on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return;
+            }
+            await fetchUsers();
+            await fetchProfile();
+        });
 
-            // Show confirmation (in real app, this would save to backend)
-            // alert(`Role updated: ${userName} is now a ${roleName}`);
+        // Fetch profile for header avatar
+        async function fetchProfile() {
+            try {
+                const response = await fetch('../api/v1/user/profile.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success' && data.user.profile_image) {
+                    document.querySelector('.header-avatar').src = '../' + data.user.profile_image;
+                }
+            } catch (err) {
+                console.error('Profile fetch error:', err);
+            }
         }
 
-        // Add User Modal Functions
+        // Fetch all users
+        async function fetchUsers(filters = {}) {
+            try {
+                let url = API_BASE + '/users.php?';
+                if (filters.role) url += `role=${filters.role}&`;
+                if (filters.status) url += `status=${filters.status}&`;
+                if (filters.search) url += `search=${encodeURIComponent(filters.search)}&`;
+
+                const response = await fetch(url, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    usersData = data.data;
+                    renderUsersTable(usersData);
+                } else {
+                    Swal.fire('Error', data.message || 'Failed to load users', 'error');
+                }
+            } catch (err) {
+                console.error('Users fetch error:', err);
+            }
+        }
+
+        function renderUsersTable(users) {
+            const tbody = document.querySelector('.user-table tbody');
+            tbody.innerHTML = '';
+
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;">No users found</td></tr>';
+                return;
+            }
+
+            users.forEach(user => {
+                const avatarUrl = user.profile_image 
+                    ? '../' + user.profile_image 
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=${getRoleColor(user.role)}&color=fff`;
+                
+                const statusClass = user.is_active ? 'status-active' : 'status-inactive';
+                const statusText = user.is_active ? 'Active' : 'Inactive';
+                const actionBtn = user.is_active 
+                    ? `<button class="btn-action btn-deactivate" onclick="toggleUserStatus(${user.id}, false)">Deactivate</button>`
+                    : `<button class="btn-action" style="background:#dcfce7;color:#16a34a;" onclick="toggleUserStatus(${user.id}, true)">Activate</button>`;
+
+                tbody.innerHTML += `
+                    <tr data-user-id="${user.id}">
+                        <td>
+                            <div class="user-info">
+                                <img src="${avatarUrl}" alt="User" class="user-avatar">
+                                <div>
+                                    <div class="user-name">${user.full_name}</div>
+                                    <div class="user-email">${user.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${user.department}</td>
+                        <td>
+                            <select class="role-select ${user.role}" onchange="updateUserRole(${user.id}, this.value)">
+                                <option value="superadmin" ${user.role === 'superadmin' ? 'selected' : ''}>SuperAdmin</option>
+                                <option value="hr" ${user.role === 'hr' ? 'selected' : ''}>HR</option>
+                                <option value="supervisor" ${user.role === 'supervisor' ? 'selected' : ''}>Supervisor</option>
+                                <option value="employee" ${user.role === 'employee' ? 'selected' : ''}>Employee</option>
+                            </select>
+                        </td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-action btn-edit" onclick="editUser(${user.id})">Edit</button>
+                                ${actionBtn}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function getRoleColor(role) {
+            const colors = { superadmin: '7c3aed', hr: 'dc2626', supervisor: 'd97706', employee: '2563eb' };
+            return colors[role] || '2563eb';
+        }
+
+        // Update role via API
+        async function updateUserRole(userId, newRole) {
+            try {
+                const response = await fetch(API_BASE + '/user.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify({ id: userId, role: newRole })
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    Swal.fire({ icon: 'success', title: 'Role Updated', text: data.changes?.join(', '), timer: 1500, showConfirmButton: false });
+                    fetchUsers(); // Refresh table
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            } catch (err) {
+                console.error('Role update error:', err);
+            }
+        }
+
+        // Toggle active status
+        async function toggleUserStatus(userId, activate) {
+            const action = activate ? 'activate' : 'deactivate';
+            const result = await Swal.fire({
+                title: `${action.charAt(0).toUpperCase() + action.slice(1)} User?`,
+                text: `Are you sure you want to ${action} this user?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: activate ? '#16a34a' : '#dc2626',
+                confirmButtonText: `Yes, ${action}`
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(API_BASE + '/user.php', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                        },
+                        body: JSON.stringify({ id: userId, is_active: activate ? 1 : 0 })
+                    });
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        Swal.fire({ icon: 'success', title: 'Updated!', timer: 1500, showConfirmButton: false });
+                        fetchUsers();
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                } catch (err) {
+                    console.error('Status toggle error:', err);
+                }
+            }
+        }
+
+        function editUser(userId) {
+            // For now, just show info - could expand to full edit modal
+            const user = usersData.find(u => u.id === userId);
+            if (user) {
+                Swal.fire({
+                    title: user.full_name,
+                    html: `<p><strong>Email:</strong> ${user.email}</p>
+                           <p><strong>Department:</strong> ${user.department}</p>
+                           <p><strong>Role:</strong> ${user.role}</p>
+                           <p><strong>Company:</strong> ${user.company}</p>`,
+                    icon: 'info'
+                });
+            }
+        }
+
+        // Add User Modal
         const addUserBtn = document.querySelector('.btn-add-user');
         const addUserModal = document.getElementById('addUserModal');
 
-        addUserBtn.addEventListener('click', () => {
-            addUserModal.classList.add('active');
-        });
+        addUserBtn.addEventListener('click', () => addUserModal.classList.add('active'));
 
         function closeAddUserModal() {
             addUserModal.classList.remove('active');
         }
 
         addUserModal.addEventListener('click', (e) => {
-            if (e.target === addUserModal) {
-                closeAddUserModal();
-            }
+            if (e.target === addUserModal) closeAddUserModal();
         });
 
-        // Search and Filter Functionality
-        const searchInput = document.querySelector('.search-input');
-        const roleFilter = document.querySelectorAll('.filter-select')[0]; // First select is role
-        const statusFilter = document.querySelectorAll('.filter-select')[1]; // Second select is status
-        const tableRows = document.querySelectorAll('.user-table tbody tr');
+        // Save new user
+        document.querySelector('.modal-btn.confirm').onclick = async function() {
+            const form = document.querySelector('.dashboard-form');
+            const inputs = form.querySelectorAll('input, select');
+            
+            const userData = {
+                full_name: inputs[0].value.trim(),
+                email: inputs[1].value.trim(),
+                department: inputs[2].value,
+                company_id: 1, // Default to Ensol Group
+                role: inputs[4].value,
+                is_active: inputs[5].value === 'active' ? 1 : 0
+            };
 
-        function filterUsers() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedRole = roleFilter.value.toLowerCase();
-            const selectedStatus = statusFilter.value.toLowerCase();
+            if (!userData.full_name || !userData.email) {
+                Swal.fire('Error', 'Please fill in all required fields', 'error');
+                return;
+            }
 
-            tableRows.forEach(row => {
-                const name = row.querySelector('.user-name').textContent.toLowerCase();
-                const email = row.querySelector('.user-email').textContent.toLowerCase();
-                // Role is in a select element value
-                const roleSelect = row.querySelector('.role-select');
-                const role = roleSelect.value.toLowerCase();
-                // Status is text in a span
-                const status = row.cells[3].textContent.trim().toLowerCase();
+            try {
+                const response = await fetch(API_BASE + '/users.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify(userData)
+                });
+                const data = await response.json();
 
-                const matchesSearch = name.includes(searchTerm) || email.includes(searchTerm);
-                const matchesRole = selectedRole === '' || role === selectedRole;
-                const matchesStatus = selectedStatus === '' || status === selectedStatus;
-
-                if (matchesSearch && matchesRole && matchesStatus) {
-                    row.style.display = '';
+                if (data.status === 'success') {
+                    closeAddUserModal();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'User Created!',
+                        html: `<p>Temporary password: <code>${data.data.temp_password}</code></p>
+                               <p><small>Please share this with the user securely.</small></p>`,
+                        confirmButtonColor: '#7c3aed'
+                    });
+                    fetchUsers();
+                    // Clear form
+                    inputs.forEach(input => input.value = '');
                 } else {
-                    row.style.display = 'none';
+                    Swal.fire('Error', data.message, 'error');
                 }
+            } catch (err) {
+                console.error('Add user error:', err);
+                Swal.fire('Error', 'Failed to create user', 'error');
+            }
+        };
+
+        // Search and Filter
+        const searchInput = document.querySelector('.search-input');
+        const roleFilter = document.querySelectorAll('.filter-select')[0];
+        const statusFilter = document.querySelectorAll('.filter-select')[1];
+
+        function applyFilters() {
+            fetchUsers({
+                search: searchInput.value,
+                role: roleFilter.value,
+                status: statusFilter.value
             });
         }
 
-        searchInput.addEventListener('input', filterUsers);
-        roleFilter.addEventListener('change', filterUsers);
-        statusFilter.addEventListener('change', filterUsers);
+        let searchTimeout;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(applyFilters, 300);
+        });
+        roleFilter.addEventListener('change', applyFilters);
+        statusFilter.addEventListener('change', applyFilters);
+
+        // Logout handler
+        document.querySelector('.logout-item')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#7c3aed',
+                confirmButtonText: 'Yes, logout'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('authToken');
+                    window.location.href = '../auth/login.php';
+                }
+            });
+        });
     </script>
 </body>
 

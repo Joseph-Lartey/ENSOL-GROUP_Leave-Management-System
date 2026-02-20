@@ -140,7 +140,7 @@
                         </div>
                         <div class="stat-info">
                             <div class="stat-label">Total leave days</div>
-                            <div class="stat-value">45<span class="stat-unit">days</span></div>
+                            <div class="stat-value" id="stat-total-allowed">--<span class="stat-unit">days</span></div>
                         </div>
                     </div>
 
@@ -156,7 +156,7 @@
                         </div>
                         <div class="stat-info">
                             <div class="stat-label">Total leave days left</div>
-                            <div class="stat-value">45<span class="stat-unit">days</span></div>
+                            <div class="stat-value" id="stat-leave-balance">--<span class="stat-unit">days</span></div>
                         </div>
                     </div>
 
@@ -169,7 +169,7 @@
                         </div>
                         <div class="stat-info">
                             <div class="stat-label">Total sick days left</div>
-                            <div class="stat-value">45<span class="stat-unit">days</span></div>
+                            <div class="stat-value" id="stat-sick-balance">--<span class="stat-unit">days</span></div>
                         </div>
                     </div>
                 </div>
@@ -217,6 +217,47 @@
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('contestForm');
+            const token = localStorage.getItem('token');
+
+            if(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const data = {
+                        leaveType: document.getElementById('leaveType').value,
+                        currentStat: document.getElementById('currentStat').value,
+                        correctStat: document.getElementById('correctStat').value,
+                        comments: document.getElementById('comments').value
+                    };
+
+                    fetch('../../api/v1/leaves/contest.php', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(r => r.json())
+                    .then(res => {
+                        if(res.status === 'success') {
+                            alert('Contest submitted successfully.');
+                            form.reset();
+                        } else {
+                            alert('Error: ' + res.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('An error occurred.');
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

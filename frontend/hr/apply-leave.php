@@ -76,6 +76,15 @@
                     </span>
                     <span class="nav-text">Apply Leave</span>
                 </a>
+                <a href="profile.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Profile</span>
+                </a>
             </div>
 
             <div class="sidebar-footer">
@@ -187,11 +196,168 @@
         </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Form submission
-        document.querySelector('.dashboard-form').addEventListener('submit', function (e) {
+        const API_BASE = '../../api/v1';
+
+        // Get JWT Token
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const token = getToken();
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return false;
+            }
+            return true;
+        }
+
+        // Fetch and pre-fill user profile data
+        async function fetchProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/user/profile.php`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = '../auth/login.php';
+                    return;
+                }
+                
+                const result = await response.json();
+                if (result.status === 'success') {
+                    const data = result.data;
+                    // Pre-fill name fields
+                    const nameParts = (data.full_name || '').split(' ');
+                    document.getElementById('firstName').value = nameParts[0] || '';
+                    document.getElementById('lastName').value = nameParts.slice(1).join(' ') || '';
+                    
+                    // Pre-fill job title if available
+                    if (data.position) {
+                        document.getElementById('jobTitle').value = data.position;
+                    }
+                    
+                    // Update avatar
+                    if (data.profile_image) {
+                        const avatar = document.querySelector('.header-avatar');
+                        if (avatar) avatar.src = '../' + data.profile_image;
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        }
+
+        // Submit leave application
+        async function submitLeaveApplication(e) {
             e.preventDefault();
-            alert('Leave application submitted successfully!');
+            
+            const form = e.target;
+            const submitBtn = form.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            const payload = {
+                reason: document.getElementById('reason').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                vacationAddress: document.getElementById('vacationAddress').value,
+                emergencyName: document.getElementById('emergencyName').value,
+                emergencyPhone: document.getElementById('emergencyPhone').value,
+                coveredBy: document.getElementById('coveredBy').value
+            };
+
+            // Validate dates
+            if (new Date(payload.endDate) < new Date(payload.startDate)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Dates',
+                    text: 'End date cannot be before start date.'
+                });
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Application';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/leaves/apply.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Application Submitted!',
+                        text: 'Your leave request has been submitted for approval.',
+                        confirmButtonColor: '#dc2626'
+                    }).then(() => {
+                        // Reset form except pre-filled fields
+                        document.getElementById('reason').value = '';
+                        document.getElementById('startDate').value = '';
+                        document.getElementById('endDate').value = '';
+                        document.getElementById('vacationAddress').value = '';
+                        document.getElementById('emergencyName').value = '';
+                        document.getElementById('emergencyPhone').value = '';
+                        document.getElementById('coveredBy').value = '';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Submission Failed',
+                        text: result.message || 'Failed to submit leave application.'
+                    });
+                }
+            } catch (error) {
+                console.error('Error submitting leave:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Network error. Please try again.'
+                });
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Application';
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuth()) return;
+            
+            fetchProfile();
+            document.querySelector('.dashboard-form').addEventListener('submit', submitLeaveApplication);
+            
+            // Logout confirmation
+            const logoutBtn = document.querySelector('.logout-item');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Logout',
+                        text: 'Are you sure you want to logout?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc2626',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Yes, logout'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            localStorage.removeItem('token');
+                            window.location.href = '../auth/login.php';
+                        }
+                    });
+                });
+            }
         });
     </script>
 </body>

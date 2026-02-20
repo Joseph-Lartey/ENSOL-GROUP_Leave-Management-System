@@ -52,15 +52,6 @@
                     </span>
                     <span class="nav-text">Roles</span>
                 </a>
-                <a href="permissions.php" class="nav-item">
-                    <span class="nav-icon">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    </span>
-                    <span class="nav-text">Permissions</span>
-                </a>
                 <a href="logs.php" class="nav-item">
                     <span class="nav-icon">
                         <svg viewBox="0 0 24 24">
@@ -109,180 +100,10 @@
 
             <!-- Page Content -->
             <div class="page-content">
-                <button class="btn-add-role">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    Create New Role
-                </button>
-
                 <!-- Roles Grid -->
-                <div class="roles-grid">
-                    <!-- SuperAdmin Role -->
-                    <div class="role-card superadmin">
-                        <div class="role-card-header">
-                            <div>
-                                <div class="role-name">SuperAdmin</div>
-                                <div class="role-count">1 user</div>
-                            </div>
-                            <div class="role-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polygon
-                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-                                    </polygon>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="role-description">
-                            Full system access with complete control over all users, roles, and permissions.
-                        </div>
-                        <div class="permissions-list">
-                            <div class="permissions-title">Key Permissions</div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Manage all users
-                            </div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Create/edit roles
-                            </div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                System settings access
-                            </div>
-                        </div>
-                        <button class="btn-edit-role">Edit Permissions</button>
-                    </div>
-
-                    <!-- Admin Role -->
-                    <div class="role-card admin">
-                        <div class="role-card-header">
-                            <div>
-                                <div class="role-name">Administrator</div>
-                                <div class="role-count">5 users</div>
-                            </div>
-                            <div class="role-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="role-description">
-                            Administrative access to manage employees, approvals, and department settings.
-                        </div>
-                        <div class="permissions-list">
-                            <div class="permissions-title">Key Permissions</div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                View all employees
-                            </div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Approve/reject leave
-                            </div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Generate reports
-                            </div>
-                        </div>
-                        <button class="btn-edit-role">Edit Permissions</button>
-                    </div>
-
-                    <!-- HR Supervisor Role -->
-                    <div class="role-card supervisor">
-                        <div class="role-card-header">
-                            <div>
-                                <div class="role-name">HR Supervisor</div>
-                                <div class="role-count">12 users</div>
-                            </div>
-                            <div class="role-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                    <path
-                                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                                    </path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="role-description">
-                            Team supervision with leave approval capabilities for assigned team members.
-                        </div>
-                        <div class="permissions-list">
-                            <div class="permissions-title">Key Permissions</div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                View team members
-                            </div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Approve team leave
-                            </div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                View team reports
-                            </div>
-                        </div>
-                        <button class="btn-edit-role">Edit Permissions</button>
-                    </div>
-
-                    <!-- User Role -->
-                    <div class="role-card user">
-                        <div class="role-card-header">
-                            <div>
-                                <div class="role-name">User</div>
-                                <div class="role-count">138 users</div>
-                            </div>
-                            <div class="role-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="role-description">
-                            Standard employee access to apply for leave and view personal leave history.
-                        </div>
-                        <div class="permissions-list">
-                            <div class="permissions-title">Key Permissions</div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Apply for leave
-                            </div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                View own history
-                            </div>
-                            <div class="permission-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Update profile
-                            </div>
-                        </div>
-                        <button class="btn-edit-role">Edit Permissions</button>
+                <div class="roles-grid" id="rolesGrid">
+                    <div style="text-align:center; padding: 40px; color: var(--medium-gray); grid-column: 1/-1;">
+                        Loading roles...
                     </div>
                 </div>
             </div>
@@ -290,6 +111,116 @@
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        const API_BASE = '../api/v1/superadmin';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return;
+            }
+            await fetchRoles();
+            await fetchProfile();
+        });
+
+        async function fetchProfile() {
+            try {
+                const response = await fetch('../api/v1/user/profile.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success' && data.user.profile_image) {
+                    document.querySelector('.header-avatar').src = '../' + data.user.profile_image;
+                }
+            } catch (err) {
+                console.error('Profile fetch error:', err);
+            }
+        }
+
+        async function fetchRoles() {
+            try {
+                const response = await fetch(API_BASE + '/roles.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderRoles(data.data);
+                } else {
+                    document.getElementById('rolesGrid').innerHTML = 
+                        '<div style="text-align:center;padding:40px;color:var(--medium-gray);grid-column:1/-1;">Failed to load roles.</div>';
+                }
+            } catch (err) {
+                console.error('Roles fetch error:', err);
+                document.getElementById('rolesGrid').innerHTML = 
+                    '<div style="text-align:center;padding:40px;color:var(--medium-gray);grid-column:1/-1;">Error loading roles.</div>';
+            }
+        }
+
+        function getRoleIcon(key) {
+            const icons = {
+                'superadmin': '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>',
+                'hr': '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>',
+                'supervisor': '<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>',
+                'employee': '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>'
+            };
+            return icons[key] || icons['employee'];
+        }
+
+        function renderRoles(roles) {
+            const grid = document.getElementById('rolesGrid');
+
+            if (!roles || roles.length === 0) {
+                grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--medium-gray);grid-column:1/-1;">No roles found.</div>';
+                return;
+            }
+
+            let html = '';
+            roles.forEach(role => {
+                const userLabel = role.user_count === 1 ? '1 user' : `${role.user_count} users`;
+                const permissionsHtml = role.permissions.map(p => `
+                    <div class="permission-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        ${p}
+                    </div>
+                `).join('');
+
+                html += `
+                    <div class="role-card ${role.key}">
+                        <div class="role-card-header">
+                            <div>
+                                <div class="role-name">${role.name}</div>
+                                <div class="role-count">${userLabel}</div>
+                            </div>
+                            <div class="role-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    ${getRoleIcon(role.key)}
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="role-description">${role.description}</div>
+                        <div class="permissions-list">
+                            <div class="permissions-title">Key Permissions</div>
+                            ${permissionsHtml}
+                        </div>
+                        <a href="users.php?role=${role.key}" class="btn-edit-role">View Users</a>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+        }
+
+        // Logout handler
+        document.querySelector('.logout-item')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('authToken');
+            window.location.href = '../auth/login.php';
+        });
+    </script>
 </body>
 
 </html>

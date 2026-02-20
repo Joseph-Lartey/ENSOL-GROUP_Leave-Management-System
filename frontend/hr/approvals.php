@@ -76,6 +76,15 @@
                     </span>
                     <span class="nav-text">Apply Leave</span>
                 </a>
+                <a href="profile.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Profile</span>
+                </a>
             </div>
 
             <div class="sidebar-footer">
@@ -120,22 +129,22 @@
                     <div class="stat-card stat-green">
                         <div class="stat-info">
                             <span class="stat-label">All leave requests</span>
-                            <span class="stat-value">45</span>
-                            <span class="stat-sublabel">+4 In this Month</span>
+                            <span class="stat-value" id="statTotal">--</span>
+                            <span class="stat-sublabel">Total applications</span>
                         </div>
                     </div>
                     <div class="stat-card stat-yellow">
                         <div class="stat-info">
                             <span class="stat-label">Approved requests</span>
-                            <span class="stat-value">30</span>
-                            <span class="stat-sublabel">+2 In this Month</span>
+                            <span class="stat-value" id="statApproved">--</span>
+                            <span class="stat-sublabel">Final approved by HR</span>
                         </div>
                     </div>
                     <div class="stat-card stat-red-light">
                         <div class="stat-info">
                             <span class="stat-label">Pending requests</span>
-                            <span class="stat-value">15</span>
-                            <span class="stat-sublabel">+2 In this Month</span>
+                            <span class="stat-value" id="statPending">--</span>
+                            <span class="stat-sublabel">Awaiting HR approval</span>
                         </div>
                     </div>
                 </div>
@@ -197,8 +206,47 @@
             window.location.href = '../auth/login.php';
         }
 
+        // Fetch Stats for stat cards
+        async function fetchStats() {
+            try {
+                const response = await fetch(`${API_BASE}/hr/stats.php`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    document.getElementById('statTotal').textContent = result.data.total_applications;
+                    document.getElementById('statApproved').textContent = result.data.total_approved;
+                    document.getElementById('statPending').textContent = result.data.pending_count;
+                }
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        // Fetch profile for header avatar
+        async function fetchProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/user/profile.php`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.status === 'success' && result.data && result.data.profile_image) {
+                        const headerAvatar = document.querySelector('.header-avatar');
+                        if (headerAvatar) {
+                            headerAvatar.src = `../${result.data.profile_image}`;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        }
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
+            fetchStats();
+            fetchProfile();
             loadPendingRequests();
             initTabs();
         });
@@ -566,6 +614,30 @@
                 });
             });
         }
+
+        // Logout confirmation
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.querySelector('.logout-item');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Logout',
+                        text: 'Are you sure you want to logout?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc2626',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Yes, logout'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            localStorage.removeItem('token');
+                            window.location.href = '../auth/login.php';
+                        }
+                    });
+                });
+            }
+        });
     </script>
 </body>
 

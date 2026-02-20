@@ -76,6 +76,15 @@
                     </span>
                     <span class="nav-text">Apply Leave</span>
                 </a>
+            <a href="profile.php" class="nav-item active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Profile</span>
+                </a>
             </div>
 
             <div class="sidebar-footer">
@@ -95,18 +104,19 @@
         <!-- Main Content -->
         <main class="main-content">
             <!-- Header -->
-            <header class="dashboard-header">
+            <header class="top-header">
                 <h1 class="page-title">Profile</h1>
                 <div class="header-actions">
                     <a href="notifications.php" class="notification-btn">
-                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none"
-                            stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                         </svg>
+                        <span class="notification-badge"></span>
                     </a>
-                    <a href="profile.php" class="profile-avatar">
-                        <img src="../assets/images/admin-avatar.png" alt="HR"
+                    <a href="profile.php">
+                        <img src="../assets/images/admin-avatar.png" alt="HR" class="header-avatar"
                             onerror="this.src='https://ui-avatars.com/api/?name=Admin&background=dc2626&color=fff'">
                     </a>
                 </div>
@@ -118,8 +128,8 @@
                     <div class="admin-profile-grid">
                         <!-- Profile Main -->
                         <div class="profile-main dashboard-card">
-                            <h3>John Doe</h3>
-                            <img src="https://ui-avatars.com/api/?name=John+Doe&background=dc2626&color=fff&size=150"
+                            <h3 id="profileName">Loading...</h3>
+                            <img id="profilePhoto" src="https://ui-avatars.com/api/?name=HR&background=dc2626&color=fff&size=150"
                                 alt="Profile" class="profile-photo">
                         </div>
 
@@ -128,100 +138,374 @@
                             <h3>Bio & other details</h3>
                             <div class="bio-item">
                                 <span>Name</span>
-                                <span>John Doe</span>
+                                <span id="bioName">--</span>
                             </div>
                             <div class="bio-item">
                                 <span>Role</span>
-                                <span>HR Manager</span>
+                                <span id="bioRole">--</span>
                             </div>
                             <div class="bio-item">
                                 <span>Department</span>
-                                <span>Human Resources</span>
+                                <span id="bioDepartment">--</span>
                             </div>
                             <div class="bio-item">
                                 <span>Email</span>
-                                <span>johndoe@ensol.com</span>
+                                <span id="bioEmail">--</span>
                             </div>
                             <div class="bio-item">
                                 <span>Phone</span>
-                                <span>+233 50 000 0000</span>
+                                <span id="bioPhone">--</span>
                             </div>
                             <div class="bio-item">
                                 <span>Subsidiary</span>
-                                <span>ENSOL HQ</span>
+                                <span id="bioSubsidiary">--</span>
                             </div>
-                            <div style="margin-top: 20px;">
-                                <button class="btn btn-primary" onclick="openEditModal()" style="width: 100%;">Edit
-                                    Profile</button>
+                            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                                <button class="btn btn-primary" onclick="openEditModal()" style="flex: 1;">Edit Profile</button>
+                                <button class="btn btn-outline" onclick="openPasswordModal()" style="flex: 1;">Change Password</button>
                             </div>
                         </div>
 
                         <!-- Summary -->
                         <div class="profile-summary">
                             <h3>Summary</h3>
-                            <div class="summary-item">Upcoming leave date: <strong>N/A</strong></div>
-                            <div class="summary-item">Leave duration: <strong>N/A</strong></div>
-                            <div class="summary-item">Last leave date: <strong>N/A</strong></div>
-                            <div class="summary-item">Last leave date: <strong>N/A</strong></div>
+                            <div class="summary-item">Position: <strong id="summaryPosition">--</strong></div>
+                            <div class="summary-item">Member since: <strong id="summaryMemberSince">--</strong></div>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
     <!-- Edit Profile Modal -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal-content" style="max-width: 500px; text-align: left;">
             <h2 class="modal-title" style="text-align: center;">Edit Profile</h2>
             <form id="editProfileForm">
+                <div style="margin-bottom: 16px; text-align: center;">
+                    <img id="editProfilePhoto" src="" alt="Profile" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
+                    <br>
+                    <label class="btn btn-outline" style="cursor: pointer; display: inline-block; padding: 8px 16px; font-size: 12px;">
+                        Upload Photo
+                        <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                    </label>
+                </div>
                 <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Name</label>
-                    <input type="text" value="John Doe"
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">First Name</label>
+                    <input type="text" id="editFirstName"
+                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Last Name</label>
+                    <input type="text" id="editLastName"
                         style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
                 </div>
                 <div style="margin-bottom: 16px;">
                     <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Phone</label>
-                    <input type="tel" value="+233 50 000 0000"
+                    <input type="tel" id="editPhone"
                         style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
                 </div>
                 <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Email</label>
-                    <input type="email" value="johndoe@ensol.com"
-                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
-                </div>
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Role (Request
-                        Change)</label>
-                    <input type="text" value="HR Manager" readonly
-                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px; background-color: #f9f9f9; color: #999; cursor: not-allowed;"
-                        title="Role changes must be requested from SuperAdmin">
-                </div>
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Subsidiary</label>
-                    <input type="text" value="ENSOL HQ"
-                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Email (Read-only)</label>
+                    <input type="email" id="editEmail" readonly
+                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px; background-color: #f9f9f9; color: #999;">
                 </div>
                 <div class="modal-actions" style="margin-top: 24px;">
                     <button type="button" class="modal-btn cancel" onclick="closeEditModal()">Cancel</button>
-                    <button type="submit" class="modal-btn confirm">Save Changes</button>
+                    <button type="submit" class="modal-btn confirm" id="saveProfileBtn">Save Changes</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Change Password Modal -->
+    <div class="modal-overlay" id="passwordModal">
+        <div class="modal-content" style="max-width: 400px; text-align: left;">
+            <h2 class="modal-title" style="text-align: center;">Change Password</h2>
+            <form id="changePasswordForm">
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Current Password</label>
+                    <input type="password" id="currentPassword" required
+                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">New Password</label>
+                    <input type="password" id="newPassword" required minlength="8"
+                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" required minlength="8"
+                        style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
+                </div>
+                <div class="modal-actions" style="margin-top: 24px;">
+                    <button type="button" class="modal-btn cancel" onclick="closePasswordModal()">Cancel</button>
+                    <button type="submit" class="modal-btn confirm" id="changePasswordBtn">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        const API_BASE = '../../api/v1';
+        let currentProfileData = null;
+        let selectedImageFile = null;
+
+        // Get JWT Token
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const token = getToken();
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return false;
+            }
+            return true;
+        }
+
+        // Fetch Profile Data
+        async function fetchProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/user/profile.php`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = '../auth/login.php';
+                    return;
+                }
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    currentProfileData = result.data;
+                    displayProfile(result.data);
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        }
+
+        // Display Profile Data
+        function displayProfile(data) {
+            const name = data.full_name || 'User';
+            const photoUrl = data.profile_image 
+                ? '../' + data.profile_image 
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=dc2626&color=fff&size=150`;
+
+            document.getElementById('profileName').textContent = name;
+            document.getElementById('profilePhoto').src = photoUrl;
+            document.querySelector('.header-avatar').src = photoUrl;
+
+            document.getElementById('bioName').textContent = name;
+            document.getElementById('bioRole').textContent = (data.role || '').toUpperCase();
+            document.getElementById('bioDepartment').textContent = data.department || 'N/A';
+            document.getElementById('bioEmail').textContent = data.email || 'N/A';
+            document.getElementById('bioPhone').textContent = data.phone_number || 'N/A';
+            document.getElementById('bioSubsidiary').textContent = data.subsidiary || 'N/A';
+
+            document.getElementById('summaryPosition').textContent = data.position || 'N/A';
+            document.getElementById('summaryMemberSince').textContent = data.created_at 
+                ? new Date(data.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+                : 'N/A';
+        }
+
+        // Open Edit Modal
         function openEditModal() {
+            if (!currentProfileData) return;
+
+            const nameParts = (currentProfileData.full_name || '').split(' ');
+            document.getElementById('editFirstName').value = nameParts[0] || '';
+            document.getElementById('editLastName').value = nameParts.slice(1).join(' ') || '';
+            document.getElementById('editPhone').value = currentProfileData.phone_number || '';
+            document.getElementById('editEmail').value = currentProfileData.email || '';
+            
+            const photoUrl = currentProfileData.profile_image 
+                ? '../' + currentProfileData.profile_image 
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(currentProfileData.full_name)}&background=dc2626&color=fff&size=100`;
+            document.getElementById('editProfilePhoto').src = photoUrl;
+
             document.getElementById('editProfileModal').classList.add('active');
         }
 
         function closeEditModal() {
             document.getElementById('editProfileModal').classList.remove('active');
+            selectedImageFile = null;
         }
 
-        document.getElementById('editProfileForm').addEventListener('submit', function (e) {
+        // Handle Image Selection
+        document.getElementById('profileImageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                selectedImageFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editProfilePhoto').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Save Profile
+        document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert('Profile updated successfully!');
-            closeEditModal();
+
+            const saveBtn = document.getElementById('saveProfileBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            const formData = new FormData();
+            formData.append('firstName', document.getElementById('editFirstName').value);
+            formData.append('lastName', document.getElementById('editLastName').value);
+            formData.append('phone', document.getElementById('editPhone').value);
+
+            if (selectedImageFile) {
+                formData.append('profileImage', selectedImageFile);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/user/profile.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Profile Updated!',
+                        text: 'Your profile has been updated successfully.',
+                        confirmButtonColor: '#dc2626'
+                    });
+                    closeEditModal();
+                    fetchProfile(); // Refresh display
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Update Failed',
+                        text: result.message || 'Failed to update profile.'
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Network error. Please try again.'
+                });
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Changes';
+            }
+        });
+
+        // Password Modal
+        function openPasswordModal() {
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('passwordModal').classList.add('active');
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('active');
+        }
+
+        // Change Password
+        document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Passwords Do Not Match',
+                    text: 'Please ensure both password fields match.'
+                });
+                return;
+            }
+
+            const changeBtn = document.getElementById('changePasswordBtn');
+            changeBtn.disabled = true;
+            changeBtn.textContent = 'Changing...';
+
+            try {
+                const response = await fetch(`${API_BASE}/user/change-password.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({ currentPassword, newPassword, confirmPassword })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Password Changed!',
+                        text: 'Your password has been updated successfully.',
+                        confirmButtonColor: '#dc2626'
+                    });
+                    closePasswordModal();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Change Failed',
+                        text: result.message || 'Failed to change password.'
+                    });
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Network error. Please try again.'
+                });
+            } finally {
+                changeBtn.disabled = false;
+                changeBtn.textContent = 'Change Password';
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuth()) return;
+            fetchProfile();
+            
+            // Logout confirmation
+            const logoutBtn = document.querySelector('.logout-item');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Logout',
+                        text: 'Are you sure you want to logout?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc2626',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Yes, logout'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            localStorage.removeItem('token');
+                            window.location.href = '../auth/login.php';
+                        }
+                    });
+                });
+            }
         });
     </script>
 </body>

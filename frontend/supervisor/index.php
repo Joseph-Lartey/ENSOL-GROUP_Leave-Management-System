@@ -131,7 +131,7 @@
             <div class="page-content">
                 <!-- Welcome Section -->
                 <div class="welcome-section">
-                    <h2 class="welcome-title">Welcome back, Supervisor!</h2>
+                    <h2 class="welcome-title" id="welcome-message">Welcome back!</h2>
                     <p class="welcome-subtitle">Here's an overview of your leave status and team approvals</p>
                 </div>
 
@@ -149,7 +149,7 @@
                         </div>
                         <div class="stat-info">
                             <div class="stat-label">Total leave days</div>
-                            <div class="stat-value">45<span class="stat-unit">days</span></div>
+                            <div class="stat-value" id="stat-total-allowed">--<span class="stat-unit">days</span></div>
                         </div>
                     </div>
 
@@ -165,7 +165,7 @@
                         </div>
                         <div class="stat-info">
                             <div class="stat-label">Total leave days left</div>
-                            <div class="stat-value">30<span class="stat-unit">days</span></div>
+                            <div class="stat-value" id="stat-leave-balance">--<span class="stat-unit">days</span></div>
                         </div>
                     </div>
 
@@ -177,8 +177,8 @@
                             </svg>
                         </div>
                         <div class="stat-info">
-                            <div class="stat-label">Total sick days left</div>
-                            <div class="stat-value">30<span class="stat-unit">days</span></div>
+                            <div class="stat-label">Pending Requests</div>
+                            <div class="stat-value" id="stat-pending-requests">--</div>
                         </div>
                     </div>
                 </div>
@@ -186,8 +186,8 @@
                 <!-- Quick Links -->
                 <div style="display: flex; gap: var(--space-4); margin-bottom: var(--space-6);">
                     <a href="apply-leave.php" class="apply-leave-link">Apply Leave →</a>
-                    <a href="approvals.php" class="apply-leave-link"
-                        style="background: #f3f4f6; color: var(--jet-black);">Pending Approvals (3) →</a>
+                    <a href="approvals.php" class="apply-leave-link" id="pendingApprovalsLink"
+                        style="background: #f3f4f6; color: var(--jet-black);">Pending Approvals (Loading...) →</a>
                 </div>
 
                 <!-- Dashboard Grid -->
@@ -230,33 +230,9 @@
                             <a href="my-requests.php" class="card-link">View all</a>
                         </div>
                         <div class="card-body" style="padding: 0;">
-                            <div class="request-list">
-                                <div class="request-item">
-                                    <div class="request-icon annual">📅</div>
-                                    <div class="request-info">
-                                        <div class="request-type">Annual Leave</div>
-                                        <div class="request-status">HR Approved</div>
-                                    </div>
-                                    <div class="request-date">20.10.2025</div>
-                                </div>
-
-                                <div class="request-item">
-                                    <div class="request-icon annual">📅</div>
-                                    <div class="request-info">
-                                        <div class="request-type">Annual Leave</div>
-                                        <div class="request-status">HR Approved</div>
-                                    </div>
-                                    <div class="request-date">20.10.2025</div>
-                                </div>
-
-                                <div class="request-item">
-                                    <div class="request-icon annual">📅</div>
-                                    <div class="request-info">
-                                        <div class="request-type">Annual Leave</div>
-                                        <div class="request-status">Pending</div>
-                                    </div>
-                                    <div class="request-date">20.10.2025</div>
-                                </div>
+                            <div class="request-list" id="dashboard-requests-container">
+                                <!-- Requests will be loaded here dynamically by dashboard.js -->
+                                <div style="padding: 20px; text-align: center; color: var(--text-light);">Loading requests...</div>
                             </div>
                         </div>
                     </div>
@@ -266,6 +242,26 @@
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        // Fetch Supervisor Team Stats (Difference from Personal Stats)
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            if(token) {
+                fetch('../../api/v1/supervisor/stats.php', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                .then(r => r.json())
+                .then(res => {
+                    if(res.status === 'success') {
+                        const count = res.data.pending_count;
+                        const link = document.getElementById('pendingApprovalsLink');
+                        if(link) link.innerHTML = `Pending Approvals (${count}) →`;
+                    }
+                })
+                .catch(console.error);
+            }
+        });
+    </script>
 </body>
 
 </html>

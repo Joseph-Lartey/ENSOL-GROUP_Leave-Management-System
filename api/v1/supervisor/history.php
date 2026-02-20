@@ -1,6 +1,6 @@
 <?php
-// api/v1/supervisor/pending.php
-// Get all pending leave requests for supervisor's department
+// api/v1/supervisor/history.php
+// Get processed (approved/rejected) leave requests for supervisor's department
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
@@ -16,10 +16,10 @@ $userId = $userData['user_id'];
 $role = $userData['role'];
 $companyId = $userData['company_id'];
 
-// Check role - must be supervisor or higher
+// Check role
 if (!in_array($role, ['supervisor', 'hr', 'admin', 'superadmin'])) {
     http_response_code(403);
-    echo json_encode(["status" => "error", "message" => "Access denied. Supervisor role required."]);
+    echo json_encode(["status" => "error", "message" => "Access denied."]);
     exit;
 }
 
@@ -34,16 +34,17 @@ try {
     $supervisor = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$supervisor || empty($supervisor['department'])) {
-        // If supervisor has no department, maybe return empty or all? 
-        // Safer to return empty or error.
         http_response_code(200);
-        echo json_encode(["status" => "success", "data" => [], "count" => 0, "message" => "Supervisor has no department assigned."]);
+        echo json_encode(["status" => "success", "data" => [], "count" => 0]);
         exit;
     }
 
     $department = $supervisor['department'];
 
-    // 2. Get pending requests from users in the same company AND department
+    // 2. Get Processed Requests (Approved or Rejected)
+    // We want requests that are NOT 'pending' (meaning they were acted upon)
+    // Or specifically 'approved_supervisor', 'approved_hr', 'rejected'
+    
     $query = "SELECT 
                 lr.id,
                 lr.user_id,
@@ -60,6 +61,7 @@ try {
                 lr.emergency_contact_phone,
                 lr.covered_by,
                 lr.status,
+                lr.rejection_reason,
                 lr.created_at
               FROM leave_requests lr
               JOIN users u ON lr.user_id = u.id
@@ -67,7 +69,7 @@ try {
               WHERE u.company_id = :company_id 
                 AND u.department = :department
                 AND lr.user_id != :user_id
-                AND lr.status = 'pending'
+                AND lr.status != 'pending'
               ORDER BY lr.created_at DESC";
 
     $stmt = $db->prepare($query);
@@ -81,8 +83,7 @@ try {
     echo json_encode([
         "status" => "success",
         "data" => $requests,
-        "count" => count($requests),
-        "department" => $department
+        "count" => count($requests)
     ]);
 
 } catch (PDOException $e) {

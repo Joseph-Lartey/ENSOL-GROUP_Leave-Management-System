@@ -52,15 +52,6 @@
                     </span>
                     <span class="nav-text">Roles</span>
                 </a>
-                <a href="permissions.php" class="nav-item">
-                    <span class="nav-icon">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    </span>
-                    <span class="nav-text">Permissions</span>
-                </a>
                 <a href="logs.php" class="nav-item">
                     <span class="nav-icon">
                         <svg viewBox="0 0 24 24">
@@ -111,12 +102,10 @@
                 <!-- Notification Actions -->
                 <div class="notification-toolbar">
                     <div class="notification-filters">
-                        <button class="filter-btn active">All</button>
-                        <button class="filter-btn">Unread (3)</button>
-                        <button class="filter-btn">Role Changes</button>
-                        <button class="filter-btn">System</button>
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="unread">Unread (<span id="unreadCount">0</span>)</button>
                     </div>
-                    <button class="btn-mark-read">
+                    <button class="btn-mark-read" id="btnMarkAllRead">
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <polyline points="20 6 9 17 4 12"></polyline>
@@ -126,148 +115,9 @@
                 </div>
 
                 <!-- Notifications List -->
-                <div class="notification-list">
-                    <!-- Unread Notification -->
-                    <div class="notification-item unread">
-                        <div class="activity-icon role-change">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                <strong style="color: var(--jet-black);">Role Change Request</strong>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">2 hours
-                                    ago</span>
-                            </div>
-                            <p style="font-size: var(--text-sm); color: var(--medium-gray); margin: 0;">
-                                <strong style="color: #7c3aed;">Stephanie Mensah</strong> requested to promote John
-                                Doe to HR Supervisor
-                            </p>
-                            <div style="margin-top: var(--space-3); display: flex; gap: var(--space-2);">
-                                <button class="btn-action" style="background: #7c3aed; color: white;">Approve</button>
-                                <button class="btn-action btn-deactivate">Reject</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Unread Notification -->
-                    <div class="notification-item unread">
-                        <div class="activity-icon user-add">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="8.5" cy="7" r="4"></circle>
-                                <line x1="20" y1="8" x2="20" y2="14"></line>
-                                <line x1="23" y1="11" x2="17" y2="11"></line>
-                            </svg>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                <strong style="color: var(--jet-black);">New User Registration</strong>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">5 hours
-                                    ago</span>
-                            </div>
-                            <p style="font-size: var(--text-sm); color: var(--medium-gray); margin: 0;">
-                                <strong style="color: #7c3aed;">Emily Chen</strong> has registered and is awaiting
-                                account activation
-                            </p>
-                            <div style="margin-top: var(--space-3); display: flex; gap: var(--space-2);">
-                                <button class="btn-action" style="background: #16a34a; color: white;">Activate</button>
-                                <button class="btn-action btn-deactivate">Decline</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Unread Notification -->
-                    <div class="notification-item unread">
-                        <div
-                            style="width: 40px; height: 40px; border-radius: 50%; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path
-                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
-                                </path>
-                                <line x1="12" y1="9" x2="12" y2="13"></line>
-                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                            </svg>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                <strong style="color: var(--jet-black);">Permission Alert</strong>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">1 day ago</span>
-                            </div>
-                            <p style="font-size: var(--text-sm); color: var(--medium-gray); margin: 0;">
-                                HR Supervisor role permissions were modified. 3 new permissions added.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Read Notification -->
-                    <div class="notification-item">
-                        <div class="activity-icon" style="background: #dbeafe; color: #2563eb;">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                            </svg>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                <strong style="color: var(--jet-black);">System Update Complete</strong>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">2 days
-                                    ago</span>
-                            </div>
-                            <p style="font-size: var(--text-sm); color: var(--medium-gray); margin: 0;">
-                                The permission system has been updated successfully. All roles are now using the new
-                                permission matrix.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Read Notification -->
-                    <div class="notification-item">
-                        <div class="activity-icon role-change">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            </svg>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                <strong style="color: var(--jet-black);">Role Change Approved</strong>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">3 days
-                                    ago</span>
-                            </div>
-                            <p style="font-size: var(--text-sm); color: var(--medium-gray); margin: 0;">
-                                You approved the promotion of <strong style="color: #7c3aed;">Sarah Wilson</strong>
-                                to Administrator.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Read Notification -->
-                    <div class="notification-item">
-                        <div class="activity-icon user-remove">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="8.5" cy="7" r="4"></circle>
-                                <line x1="23" y1="11" x2="17" y2="11"></line>
-                            </svg>
-                        </div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                <strong style="color: var(--jet-black);">User Deactivated</strong>
-                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">1 week
-                                    ago</span>
-                            </div>
-                            <p style="font-size: var(--text-sm); color: var(--medium-gray); margin: 0;">
-                                <strong style="color: #7c3aed;">Mike Brown</strong>'s account was deactivated due to
-                                inactivity.
-                            </p>
-                        </div>
+                <div class="notification-list" id="notificationList">
+                    <div style="text-align:center; padding: 40px; color: var(--medium-gray);">
+                        Loading notifications...
                     </div>
                 </div>
             </div>
@@ -275,6 +125,174 @@
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        const API_BASE = '../api/v1/superadmin';
+        let currentFilter = 'all';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return;
+            }
+            await fetchNotifications();
+            await fetchProfile();
+        });
+
+        async function fetchProfile() {
+            try {
+                const response = await fetch('../api/v1/user/profile.php', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+                if (data.status === 'success' && data.user.profile_image) {
+                    document.querySelector('.header-avatar').src = '../' + data.user.profile_image;
+                }
+            } catch (err) {
+                console.error('Profile fetch error:', err);
+            }
+        }
+
+        async function fetchNotifications() {
+            try {
+                let url = API_BASE + '/notifications.php?';
+                if (currentFilter === 'unread') url += 'is_read=0&';
+
+                const response = await fetch(url, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    renderNotifications(data.data);
+                    document.getElementById('unreadCount').textContent = data.unread_count;
+
+                    // Update header badge
+                    const badge = document.querySelector('.notification-badge');
+                    if (badge) {
+                        badge.textContent = data.unread_count > 0 ? data.unread_count : '';
+                        badge.style.display = data.unread_count > 0 ? 'flex' : 'none';
+                    }
+                } else {
+                    document.getElementById('notificationList').innerHTML = 
+                        '<div style="text-align:center;padding:40px;color:var(--medium-gray);">Failed to load notifications.</div>';
+                }
+            } catch (err) {
+                console.error('Notifications fetch error:', err);
+                document.getElementById('notificationList').innerHTML = 
+                    '<div style="text-align:center;padding:40px;color:var(--medium-gray);">Error loading notifications.</div>';
+            }
+        }
+
+        function getNotificationIcon(type) {
+            const icons = {
+                'info': { bg: '#dbeafe', color: '#2563eb', svg: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>' },
+                'warning': { bg: '#fef3c7', color: '#d97706', svg: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>' },
+                'success': { bg: '#dcfce7', color: '#16a34a', svg: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>' },
+                'error': { bg: '#fef2f2', color: '#dc2626', svg: '<circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>' }
+            };
+            return icons[type] || icons['info'];
+        }
+
+        function renderNotifications(notifications) {
+            const container = document.getElementById('notificationList');
+
+            if (!notifications || notifications.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:60px 40px;color:var(--medium-gray);">
+                        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 12px; opacity: 0.4;">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <p>No notifications ${currentFilter === 'unread' ? 'unread' : 'found'}.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            notifications.forEach(n => {
+                const icon = getNotificationIcon(n.type);
+                const unreadClass = !n.is_read ? 'unread' : '';
+
+                html += `
+                    <div class="notification-item ${unreadClass}" data-id="${n.id}">
+                        <div style="width:40px;height:40px;border-radius:50%;background:${icon.bg};color:${icon.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                ${icon.svg}
+                            </svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <strong style="color: var(--jet-black);">${n.title}</strong>
+                                <span style="font-size: var(--text-xs); color: var(--medium-gray);">${n.relative_time}</span>
+                            </div>
+                            <p style="font-size: var(--text-sm); color: var(--medium-gray); margin: 0;">
+                                ${n.message}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Click to mark individual as read
+            container.querySelectorAll('.notification-item.unread').forEach(item => {
+                item.addEventListener('click', () => markAsRead(item.dataset.id));
+            });
+        }
+
+        async function markAsRead(id) {
+            try {
+                await fetch(API_BASE + '/notifications.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: parseInt(id) })
+                });
+                await fetchNotifications();
+            } catch (err) {
+                console.error('Mark read error:', err);
+            }
+        }
+
+        // Mark All Read
+        document.getElementById('btnMarkAllRead').addEventListener('click', async () => {
+            try {
+                await fetch(API_BASE + '/notifications.php', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mark_all: true })
+                });
+                await fetchNotifications();
+            } catch (err) {
+                console.error('Mark all read error:', err);
+            }
+        });
+
+        // Filter tabs
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                fetchNotifications();
+            });
+        });
+
+        // Logout handler
+        document.querySelector('.logout-item')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('authToken');
+            window.location.href = '../auth/login.php';
+        });
+    </script>
 </body>
 
 </html>

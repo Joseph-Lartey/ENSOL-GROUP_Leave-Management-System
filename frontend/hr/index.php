@@ -77,6 +77,15 @@
                     </span>
                     <span class="nav-text">Apply Leave</span>
                 </a>
+                <a href="profile.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Profile</span>
+                </a>
             </div>
 
             <div class="sidebar-footer">
@@ -118,7 +127,7 @@
             <div class="page-content">
                 <!-- Welcome Section -->
                 <div class="welcome-section">
-                    <h2 class="welcome-title">Hello, Stephanie!</h2>
+                    <h2 class="welcome-title" id="welcomeTitle">Hello!</h2>
                     <p class="welcome-subtitle">Track & Manage Your Team Progress Here</p>
                 </div>
 
@@ -136,7 +145,7 @@
                         </div>
                         <div class="stat-info">
                             <span class="stat-label">TOTAL LEAVE APPLICATION</span>
-                            <span class="stat-value">45</span>
+                            <span class="stat-value" id="statTotal">--</span>
                             <span class="stat-sublabel">Leave Applied</span>
                         </div>
                     </div>
@@ -150,7 +159,7 @@
                         </div>
                         <div class="stat-info">
                             <span class="stat-label">TOTAL LEAVE APPROVED</span>
-                            <span class="stat-value">30</span>
+                            <span class="stat-value" id="statApproved">--</span>
                             <span class="stat-sublabel">Leave Approved</span>
                         </div>
                     </div>
@@ -165,7 +174,7 @@
                         </div>
                         <div class="stat-info">
                             <span class="stat-label">TOTAL LEAVE DENIED</span>
-                            <span class="stat-value">30</span>
+                            <span class="stat-value" id="statDenied">--</span>
                             <span class="stat-sublabel">Leave Denied</span>
                         </div>
                     </div>
@@ -178,19 +187,19 @@
                         <div class="chart-legend">
                             <div class="legend-item">
                                 <span class="legend-dot" style="background: #dc2626;"></span>
-                                <span>Leave</span>
-                                <span class="legend-value">31</span>
+                                <span>On Leave</span>
+                                <span class="legend-value" id="legendLeave">0</span>
                             </div>
                             <div class="legend-item">
                                 <span class="legend-dot" style="background: #22c55e;"></span>
                                 <span>Present</span>
-                                <span class="legend-value">5</span>
+                                <span class="legend-value" id="legendPresent">0</span>
                             </div>
                         </div>
                         <div class="chart-container">
                             <canvas id="leaveChart"></canvas>
                             <div class="chart-center-text">
-                                <span class="chart-percentage">86%</span>
+                                <span class="chart-percentage" id="chartPercentage">0%</span>
                             </div>
                         </div>
                     </div>
@@ -198,59 +207,11 @@
                     <!-- Recent Activity -->
                     <div class="dashboard-card activity-card">
                         <div class="card-header">
-                            <span></span>
+                            <span>Recent Activity</span>
                             <a href="approvals.php" class="view-all-link">view all</a>
                         </div>
-                        <div class="activity-list">
-                            <div class="activity-item">
-                                <div class="activity-icon request">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    </svg>
-                                </div>
-                                <div class="activity-info">
-                                    <span class="activity-title">Leave Request</span>
-                                    <span class="activity-subtitle">by johnmatthew</span>
-                                </div>
-                                <span class="activity-date">20.10.2025</span>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon approved">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                </div>
-                                <div class="activity-info">
-                                    <span class="activity-title">Leave Approved</span>
-                                    <span class="activity-subtitle">by johnmatthew</span>
-                                </div>
-                                <span class="activity-date">20.10.2025</span>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon request">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    </svg>
-                                </div>
-                                <div class="activity-info">
-                                    <span class="activity-title">Leave Request</span>
-                                    <span class="activity-subtitle">by johnmatthew</span>
-                                </div>
-                                <span class="activity-date">20.10.2025</span>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon denied">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>
-                                </div>
-                                <div class="activity-info">
-                                    <span class="activity-title">Leave Denied</span>
-                                    <span class="activity-subtitle">by johnmatthew</span>
-                                </div>
-                                <span class="activity-date">20.10.2025</span>
-                            </div>
+                        <div class="activity-list" id="activityList">
+                            <p style="text-align: center; color: #888;">Loading activity...</p>
                         </div>
                     </div>
                 </div>
@@ -259,30 +220,199 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Leave Chart
-        const ctx = document.getElementById('leaveChart');
-        if (ctx) {
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Leave', 'Present'],
-                    datasets: [{
-                        data: [86, 14],
-                        backgroundColor: ['#dc2626', '#22c55e'],
-                        borderWidth: 0,
-                        cutout: '70%'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
+        const API_BASE = '../../api/v1';
+        let leaveChart = null;
+
+        // Get JWT Token
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const token = getToken();
+            if (!token) {
+                window.location.href = '../auth/login.php';
+                return false;
+            }
+            return true;
+        }
+
+        // Fetch HR Stats
+        async function fetchStats() {
+            try {
+                const response = await fetch(`${API_BASE}/hr/stats.php`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = '../auth/login.php';
+                    return;
+                }
+                
+                const result = await response.json();
+                if (result.status === 'success') {
+                    const data = result.data;
+                    document.getElementById('statTotal').textContent = data.total_applications;
+                    document.getElementById('statApproved').textContent = data.total_approved;
+                    document.getElementById('statDenied').textContent = data.total_denied;
+                    
+                    // Update chart
+                    updateChart(data.on_leave, data.present, data.total_employees);
+                }
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        // Update Chart
+        function updateChart(onLeave, present, total) {
+            document.getElementById('legendLeave').textContent = onLeave;
+            document.getElementById('legendPresent').textContent = present;
+            
+            const leavePercentage = total > 0 ? Math.round((onLeave / total) * 100) : 0;
+            document.getElementById('chartPercentage').textContent = leavePercentage + '%';
+            
+            const ctx = document.getElementById('leaveChart');
+            if (leaveChart) {
+                leaveChart.data.datasets[0].data = [onLeave, present];
+                leaveChart.update();
+            } else if (ctx) {
+                leaveChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['On Leave', 'Present'],
+                        datasets: [{
+                            data: [onLeave || 0, present || 1],
+                            backgroundColor: ['#dc2626', '#22c55e'],
+                            borderWidth: 0,
+                            cutout: '70%'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Fetch Recent Activity
+        async function fetchActivity() {
+            try {
+                const response = await fetch(`${API_BASE}/hr/activity.php?limit=5`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                const result = await response.json();
+                if (result.status === 'success') {
+                    renderActivity(result.data);
+                }
+            } catch (error) {
+                console.error('Error fetching activity:', error);
+                document.getElementById('activityList').innerHTML = '<p style="color: #888;">Failed to load activity.</p>';
+            }
+        }
+
+        // Render Activity List
+        function renderActivity(activities) {
+            const container = document.getElementById('activityList');
+            
+            if (!activities || activities.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #888;">No recent activity.</p>';
+                return;
+            }
+            
+            container.innerHTML = activities.map(item => {
+                let iconClass = 'request';
+                let iconSvg = '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>';
+                let title = 'Leave Request';
+                
+                if (item.activity_type === 'approved') {
+                    iconClass = 'approved';
+                    iconSvg = '<polyline points="20 6 9 17 4 12"></polyline>';
+                    title = 'Leave Approved';
+                } else if (item.activity_type === 'denied') {
+                    iconClass = 'denied';
+                    iconSvg = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
+                    title = 'Leave Denied';
+                }
+                
+                return `
+                    <div class="activity-item">
+                        <div class="activity-icon ${iconClass}">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none">
+                                ${iconSvg}
+                            </svg>
+                        </div>
+                        <div class="activity-info">
+                            <span class="activity-title">${title}</span>
+                            <span class="activity-subtitle">by ${item.employee_name}</span>
+                        </div>
+                        <span class="activity-date">${item.date}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Fetch User Profile for Welcome Message
+        async function fetchProfile() {
+            try {
+                const response = await fetch(`${API_BASE}/user/profile.php`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                const result = await response.json();
+                if (result.status === 'success') {
+                    const name = result.data.full_name?.split(' ')[0] || 'HR';
+                    document.getElementById('welcomeTitle').textContent = `Hello, ${name}!`;
+                    
+                    // Update avatar if available
+                    if (result.data.profile_image) {
+                        const avatar = document.querySelector('.header-avatar');
+                        if (avatar) avatar.src = '../' + result.data.profile_image;
                     }
                 }
-            });
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
         }
+
+        // Initialize Dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuth()) return;
+            
+            fetchStats();
+            fetchActivity();
+            fetchProfile();
+            
+            // Logout confirmation
+            const logoutBtn = document.querySelector('.logout-item');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Logout',
+                        text: 'Are you sure you want to logout?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc2626',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Yes, logout'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            localStorage.removeItem('token');
+                            window.location.href = '../auth/login.php';
+                        }
+                    });
+                });
+            }
+        });
     </script>
 </body>
 

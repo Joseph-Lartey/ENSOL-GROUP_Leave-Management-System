@@ -128,58 +128,8 @@
             <div class="page-content">
                 <div class="card">
                     <div class="card-body" style="padding: 0;">
-                        <div class="requests-table">
-                            <div class="request-row" data-request-id="1">
-                                <div class="request-icon annual">📅</div>
-                                <div class="request-details">
-                                    <div class="request-title">Annual Leave</div>
-                                    <div class="request-meta">HR Approved</div>
-                                </div>
-                                <div class="request-date">20.10.2025</div>
-                                <div class="request-actions">
-                                    <button class="btn-delete" onclick="deleteRequest(1)">Delete</button>
-                                    <button class="btn-edit" onclick="editRequest(1)">Edit</button>
-                                </div>
-                            </div>
-
-                            <div class="request-row" data-request-id="2">
-                                <div class="request-icon annual">📅</div>
-                                <div class="request-details">
-                                    <div class="request-title">Annual Leave</div>
-                                    <div class="request-meta">HR Approved</div>
-                                </div>
-                                <div class="request-date">20.10.2025</div>
-                                <div class="request-actions">
-                                    <button class="btn-delete" onclick="deleteRequest(2)">Delete</button>
-                                    <button class="btn-edit" onclick="editRequest(2)">Edit</button>
-                                </div>
-                            </div>
-
-                            <div class="request-row" data-request-id="3">
-                                <div class="request-icon annual">📅</div>
-                                <div class="request-details">
-                                    <div class="request-title">Annual Leave</div>
-                                    <div class="request-meta">Pending</div>
-                                </div>
-                                <div class="request-date">20.10.2025</div>
-                                <div class="request-actions">
-                                    <button class="btn-delete" onclick="deleteRequest(3)">Delete</button>
-                                    <button class="btn-edit" onclick="editRequest(3)">Edit</button>
-                                </div>
-                            </div>
-
-                            <div class="request-row" data-request-id="4">
-                                <div class="request-icon annual">📅</div>
-                                <div class="request-details">
-                                    <div class="request-title">Sick Leave</div>
-                                    <div class="request-meta">HR Approved</div>
-                                </div>
-                                <div class="request-date">15.09.2025</div>
-                                <div class="request-actions">
-                                    <button class="btn-delete" onclick="deleteRequest(4)">Delete</button>
-                                    <button class="btn-edit" onclick="editRequest(4)">Edit</button>
-                                </div>
-                            </div>
+                        <div class="requests-table" id="my-requests-container">
+                            <div style="padding: 20px; text-align: center; color: var(--text-light);">Loading your requests...</div>
                         </div>
                     </div>
                 </div>
@@ -188,6 +138,60 @@
     </div>
 
     <script src="../assets/js/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if(!token) return;
+
+            fetch('../../api/v1/user/requests.php', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(r => r.json())
+            .then(res => {
+                const container = document.getElementById('my-requests-container');
+                if(res.status === 'success' && res.data.length > 0) {
+                    container.innerHTML = res.data.map(req => `
+                        <div class="request-row" data-request-id="${req.id}">
+                            <div class="request-icon annual">📅</div>
+                            <div class="request-details">
+                                <div class="request-title">${req.leave_type}</div>
+                                <div class="request-meta">${req.status.replace('_', ' ').toUpperCase()}</div>
+                            </div>
+                            <div class="request-date">${new Date(req.created_at).toLocaleDateString()}</div>
+                            <div class="request-actions">
+                                ${req.status === 'pending' ? `<button class="btn-delete" onclick="deleteRequest(${req.id})" style="color:red;">Cancel</button>` : ''}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div style="padding: 20px; text-align: center;">No requests found.</div>';
+                }
+            })
+            .catch(console.error);
+        });
+
+        function deleteRequest(id) {
+            if(!confirm('Cancel request?')) return;
+            const token = localStorage.getItem('token');
+            fetch('../../api/v1/leaves/cancel.php', {
+                method: 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ request_id: id })
+            })
+            .then(r => r.json())
+            .then(d => {
+                if(d.status === 'success') {
+                    alert('Cancelled');
+                    location.reload();
+                } else {
+                    alert('Failed: ' + d.message);
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
