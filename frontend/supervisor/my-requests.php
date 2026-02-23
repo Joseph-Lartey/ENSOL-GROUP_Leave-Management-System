@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../assets/css/variables.css">
     <link rel="stylesheet" href="../assets/css/base.css">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="icon" type="image/jpeg" href="../assets/ensol_logo.jpg">
 </head>
 
 <body>

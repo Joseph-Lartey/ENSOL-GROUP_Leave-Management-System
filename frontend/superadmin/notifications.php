@@ -130,7 +130,7 @@
         let currentFilter = 'all';
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = '../auth/login.php';
                 return;
@@ -142,7 +142,7 @@
         async function fetchProfile() {
             try {
                 const response = await fetch('../api/v1/user/profile.php', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
                 const data = await response.json();
                 if (data.status === 'success' && data.user.profile_image) {
@@ -159,7 +159,7 @@
                 if (currentFilter === 'unread') url += 'is_read=0&';
 
                 const response = await fetch(url, {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
                 const data = await response.json();
 
@@ -248,7 +248,7 @@
                 await fetch(API_BASE + '/notifications.php', {
                     method: 'PUT',
                     headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                        'Authorization': 'Bearer ' + localStorage.getItem('token'),
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ id: parseInt(id) })
@@ -265,7 +265,7 @@
                 await fetch(API_BASE + '/notifications.php', {
                     method: 'PUT',
                     headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                        'Authorization': 'Bearer ' + localStorage.getItem('token'),
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ mark_all: true })
@@ -289,7 +289,7 @@
         // Logout handler
         document.querySelector('.logout-item')?.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('authToken');
+            localStorage.removeItem('token');
             window.location.href = '../auth/login.php';
         });
     </script>

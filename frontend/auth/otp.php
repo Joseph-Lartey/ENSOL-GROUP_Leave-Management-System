@@ -57,7 +57,7 @@
     </style>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="icon" type="image/jpeg" href="../assets/ensol_logo.jpg">
 </head>
 
 <body>

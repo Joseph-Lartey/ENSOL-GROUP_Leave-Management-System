@@ -396,7 +396,7 @@
 
         // Verify auth on page load
         document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = '../auth/login.php';
                 return;
@@ -409,7 +409,7 @@
         async function fetchProfile() {
             try {
                 const response = await fetch('../api/v1/user/profile.php', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
                 const data = await response.json();
                 if (data.status === 'success' && data.user.profile_image) {
@@ -429,7 +429,7 @@
                 if (filters.search) url += `search=${encodeURIComponent(filters.search)}&`;
 
                 const response = await fetch(url, {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
                 const data = await response.json();
 
@@ -508,7 +508,7 @@
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
                     },
                     body: JSON.stringify({ id: userId, role: newRole })
                 });
@@ -543,7 +543,7 @@
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
                         },
                         body: JSON.stringify({ id: userId, is_active: activate ? 1 : 0 })
                     });
@@ -614,7 +614,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
                     },
                     body: JSON.stringify(userData)
                 });
@@ -673,7 +673,7 @@
                 confirmButtonText: 'Yes, logout'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('token');
                     window.location.href = '../auth/login.php';
                 }
             });

@@ -296,7 +296,7 @@
 
         // Verify auth on page load
         document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = '../auth/login.php';
                 return;
@@ -310,7 +310,7 @@
         async function fetchProfile() {
             try {
                 const response = await fetch('../api/v1/user/profile.php', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
                 const data = await response.json();
                 if (data.status === 'success') {
@@ -329,7 +329,7 @@
         async function fetchStats() {
             try {
                 const response = await fetch(API_BASE + '/stats.php', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
                 const data = await response.json();
                 
@@ -384,7 +384,7 @@
         async function fetchRecentActivity() {
             try {
                 const response = await fetch(API_BASE + '/logs.php?limit=5', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
                 const data = await response.json();
 
@@ -437,12 +437,12 @@
                     confirmButtonText: 'Yes, logout'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('token');
                         window.location.href = '../auth/login.php';
                     }
                 });
             } else {
-                localStorage.removeItem('authToken');
+                localStorage.removeItem('token');
                 window.location.href = '../auth/login.php';
             }
         });

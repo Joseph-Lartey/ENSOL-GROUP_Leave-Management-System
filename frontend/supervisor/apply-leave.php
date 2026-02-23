@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../assets/css/variables.css">
     <link rel="stylesheet" href="../assets/css/base.css">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="icon" type="image/jpeg" href="../assets/ensol_logo.jpg">
 </head>
 
 <body>
@@ -211,7 +211,7 @@
         const API_BASE = '../api/v1';
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = '../auth/login.php';
                 return;
@@ -230,7 +230,7 @@
         async function fetchProfile() {
             try {
                 const response = await fetch(API_BASE + '/user/profile.php', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
                 const data = await response.json();
                 if (data.status === 'success') {
@@ -250,7 +250,7 @@
         async function loadLeaveTypes() {
             try {
                 const response = await fetch(API_BASE + '/leaves/types.php', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
                 });
                 const data = await response.json();
                 if (data.status === 'success') {
@@ -287,7 +287,7 @@
                 const response = await fetch(API_BASE + '/leaves/apply.php', {
                     method: 'POST',
                     headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                        'Authorization': 'Bearer ' + localStorage.getItem('token'),
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(body)
@@ -327,7 +327,7 @@
         // Logout
         document.querySelector('.logout-btn')?.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('authToken');
+            localStorage.removeItem('token');
             window.location.href = '../auth/login.php';
         });
     </script>
