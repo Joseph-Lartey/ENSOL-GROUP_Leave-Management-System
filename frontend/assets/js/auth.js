@@ -366,15 +366,47 @@ function handleForgotPasswordSubmit(e) {
     const submitBtn = this.querySelector('button[type="submit"]');
     setButtonLoading(submitBtn, true);
 
-    // Simulate API call
-    console.log('Forgot password request for:', email);
+    // API call
+    fetch('../../api/v1/auth/forgot_password.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+    })
+        .then(response => response.json())
+        .then(data => {
+            setButtonLoading(submitBtn, false);
+            if (data.status === 'success') {
+                // Store email to use in OTP verification
+                localStorage.setItem('pendingVerificationEmail', email);
 
-    // TODO: Replace with actual API call
-    setTimeout(() => {
-        setButtonLoading(submitBtn, false);
-        // Redirect to verification page
-        window.location.href = 'verification.php';
-    }, 1500);
+                Swal.fire({
+                    ...swalConfig,
+                    icon: 'success',
+                    title: 'Code Sent!',
+                    text: data.message,
+                    confirmButtonText: 'Enter Code'
+                }).then(() => {
+                    window.location.href = 'otp.php'; // Or verification.php
+                });
+            } else {
+                Swal.fire({
+                    ...swalConfig,
+                    icon: 'error',
+                    title: 'Failed',
+                    text: data.message
+                });
+            }
+        })
+        .catch(error => {
+            setButtonLoading(submitBtn, false);
+            Swal.fire({
+                ...swalConfig,
+                icon: 'error',
+                title: 'System Error',
+                text: 'Unable to connect to the server.'
+            });
+            console.error('Error:', error);
+        });
 }
 
 /* ====== VERIFICATION HANDLING ====== */
@@ -474,15 +506,58 @@ function handleChangePasswordSubmit(e) {
     const submitBtn = this.querySelector('button[type="submit"]');
     setButtonLoading(submitBtn, true);
 
-    // Simulate API call
-    console.log('Password change request');
+    // API call
+    const email = localStorage.getItem('resetPasswordEmail');
+    if (!email) {
+        Swal.fire({
+            ...swalConfig,
+            icon: 'error',
+            text: 'Session expired. Please start the password reset again.'
+        }).then(() => window.location.href = 'forgot-password.php');
+        return;
+    }
 
-    // TODO: Replace with actual API call
-    setTimeout(() => {
-        setButtonLoading(submitBtn, false);
-        // Redirect to success page
-        window.location.href = 'password-changed.php';
-    }, 1500);
+    fetch('../../api/v1/auth/reset_password.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, newPassword })
+    })
+        .then(response => response.json())
+        .then(data => {
+            setButtonLoading(submitBtn, false);
+            if (data.status === 'success') {
+                localStorage.removeItem('resetPasswordEmail');
+                localStorage.removeItem('pendingVerificationEmail');
+
+                Swal.fire({
+                    ...swalConfig,
+                    icon: 'success',
+                    title: 'Password Changed!',
+                    text: 'You may now log in with your new password.',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'password-changed.php';
+                });
+            } else {
+                Swal.fire({
+                    ...swalConfig,
+                    icon: 'error',
+                    title: 'Reset Failed',
+                    text: data.message
+                });
+            }
+        })
+        .catch(error => {
+            setButtonLoading(submitBtn, false);
+            Swal.fire({
+                ...swalConfig,
+                icon: 'error',
+                title: 'System Error',
+                text: 'Unable to connect to the server.'
+            });
+            console.error('Error:', error);
+        });
 }
 
 /**

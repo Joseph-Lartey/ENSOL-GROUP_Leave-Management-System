@@ -9,8 +9,15 @@ class AuthMiddleware {
      * Returns the user data payload if valid, or terminates request if invalid.
      */
     public static function authenticate() {
-        $headers = getallheaders();
-        $authHeader = isset($headers['Authorization']) ? $headers['Authorization'] : '';
+        $headers = function_exists('getallheaders') ? getallheaders() : [];
+        $authHeader = '';
+        if (isset($headers['Authorization'])) {
+            $authHeader = $headers['Authorization'];
+        } elseif (isset($headers['authorization'])) {
+            $authHeader = $headers['authorization'];
+        } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+        }
 
         // Check for "Bearer <token>"
         if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {

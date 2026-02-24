@@ -123,6 +123,85 @@
                 }
             });
         });
+        const otpForm = document.getElementById('otpForm');
+        otpForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let otp = '';
+            inputs.forEach(input => otp += input.value);
+
+            if (otp.length !== 4) {
+                Swal.fire({
+                    icon: 'warning',
+                    text: 'Please enter the complete 4-digit code',
+                    confirmButtonColor: '#DC1609'
+                });
+                return;
+            }
+
+            const email = localStorage.getItem('pendingVerificationEmail');
+            if (!email) {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Session expired. Please try resetting your password again.',
+                    confirmButtonColor: '#DC1609'
+                }).then(() => window.location.href = 'forgot-password.php');
+                return;
+            }
+
+            const submitBtn = otpForm.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Verifying...';
+            submitBtn.disabled = true;
+
+            fetch('../../api/v1/auth/verify_otp.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        otp
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    submitBtn.textContent = 'Verify';
+                    submitBtn.disabled = false;
+
+                    if (data.status === 'success') {
+                        // Store a temporary reset token if your backend supports it, or just rely on passing the email
+                        localStorage.setItem('resetPasswordEmail', email);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Verified!',
+                            text: 'You can now change your password.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = 'change-password.php';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Verification Failed',
+                            text: data.message || 'Invalid Code',
+                            confirmButtonColor: '#DC1609'
+                        });
+                        inputs.forEach(input => input.value = '');
+                        inputs[0].focus();
+                    }
+                })
+                .catch(err => {
+                    submitBtn.textContent = 'Verify';
+                    submitBtn.disabled = false;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'System Error',
+                        text: 'Unable to connect to the server.',
+                        confirmButtonColor: '#DC1609'
+                    });
+                });
+        });
     </script>
 </body>
 
