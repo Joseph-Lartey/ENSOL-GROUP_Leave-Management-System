@@ -88,7 +88,7 @@
             </div>
 
             <div class="sidebar-footer">
-                <a href="../auth/login.php" class="nav-item logout-item">
+                <a href="#" class="nav-item logout-item">
                     <span class="nav-icon">
                         <svg viewBox="0 0 24 24">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>

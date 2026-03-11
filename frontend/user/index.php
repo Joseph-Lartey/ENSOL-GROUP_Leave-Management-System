@@ -258,8 +258,16 @@
         async function fetchProfile() {
             try {
                 const response = await fetch(API_BASE + '/user/profile.php', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    }
                 });
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '../auth/login.php';
+                    return;
+                }
                 const data = await response.json();
                 if (data.status === 'success') {
                     const user = data.user;
@@ -276,7 +284,9 @@
         async function fetchDashboardStats() {
             try {
                 const response = await fetch(API_BASE + '/dashboard/stats.php', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    }
                 });
                 const data = await response.json();
                 if (data.status === 'success') {
@@ -293,7 +303,9 @@
         async function fetchRecentRequests() {
             try {
                 const response = await fetch(API_BASE + '/user/requests.php?limit=5', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    }
                 });
                 const data = await response.json();
                 const container = document.getElementById('dashboard-requests-container');
@@ -302,8 +314,15 @@
                     container.innerHTML = data.data.map(req => {
                         const statusClass = req.status.replace('_', '-');
                         const statusLabel = formatStatus(req.status);
-                        const startDate = new Date(req.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                        const endDate = new Date(req.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                        const startDate = new Date(req.start_date).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                        const endDate = new Date(req.end_date).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                        });
 
                         return `
                             <div class="request-item">
@@ -320,7 +339,7 @@
                 }
             } catch (err) {
                 console.error('Requests fetch error:', err);
-                document.getElementById('dashboard-requests-container').innerHTML = 
+                document.getElementById('dashboard-requests-container').innerHTML =
                     '<div style="padding: 20px; text-align: center; color: var(--text-light);">Error loading requests.</div>';
             }
         }

@@ -1,0 +1,12 @@
+# Disable directory browsing
+Options -Indexes
+
+# Protect dot files (like .env, .git, .htaccess)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Protect specific sensitive files in the root
+<FilesMatch "^(project_description\.md|debug_plan\.txt|debug_profile_update\.txt)$">
+    Require all denied
+</FilesMatch>

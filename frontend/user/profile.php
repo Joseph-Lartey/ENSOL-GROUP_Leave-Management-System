@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,15 +30,17 @@
             justify-content: center;
             font-weight: 500;
             transition: all 0.3s ease;
-            transform: translateY(8px); /* Adjusted to 8px as requested */
+            transform: translateY(8px);
+            /* Adjusted to 8px as requested */
         }
 
         .change-password-btn:hover {
             background: #DC1609;
             color: #FFF;
-            font-weight: 700; /* Bold on hover */
+            font-weight: 700;
+            /* Bold on hover */
         }
-        
+
         .edit-profile-btn {
             padding: 10px 20px;
             height: 40px;
@@ -272,7 +275,7 @@
                     <input type="password" name="currentPassword" required placeholder="Enter current password"
                         style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
                 </div>
-                
+
                 <div style="margin-bottom: 16px;">
                     <label style="display: block; margin-bottom: 6px; font-size: 14px; color: #666;">New Password</label>
                     <input type="password" name="newPassword" required placeholder="Minimum 8 characters" minlength="8"
@@ -292,7 +295,7 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Logout Modal -->
     <div class="modal-overlay" id="logoutModal">
         <div class="modal-content">
@@ -314,37 +317,50 @@
 
         function fetchProfileData() {
             const jwt = localStorage.getItem('token');
-            if (!jwt) return;
+            if (!jwt) {
+                window.location.href = '../auth/login.php';
+                return;
+            }
 
             fetch('../../api/v1/user/profile.php', {
-                headers: { 'Authorization': `Bearer ${jwt}` }
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    const user = data.data;
-                    renderProfile(user);
-                    
-                    // Pre-fill Modal
-                    const names = user.full_name.split(' ');
-                    document.getElementById('editFirstName').value = names[0] || '';
-                    document.getElementById('editLastName').value = names.slice(1).join(' ') || '';
-                    document.getElementById('editPhone').value = user.phone_number || '';
-                    document.getElementById('editPosition').value = user.position || '';
-                }
-            })
-            .catch(err => console.error('Fetch Profile Error:', err));
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    }
+                })
+                .then(r => {
+                    if (r.status === 401 || r.status === 403) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.href = '../auth/login.php';
+                        throw new Error('Unauthorized');
+                    }
+                    return r.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        const user = data.data;
+                        renderProfile(user);
+
+                        // Pre-fill Modal
+                        const names = user.full_name.split(' ');
+                        document.getElementById('editFirstName').value = names[0] || '';
+                        document.getElementById('editLastName').value = names.slice(1).join(' ') || '';
+                        document.getElementById('editPhone').value = user.phone_number || '';
+                        document.getElementById('editPosition').value = user.position || '';
+                    }
+                })
+                .catch(err => console.error('Fetch Profile Error:', err));
         }
 
         function renderProfile(user) {
             // Profile Card
             document.getElementById('displayName').textContent = user.full_name;
             document.getElementById('displayRole').textContent = user.position || user.role;
-            
+
             if (user.profile_image) {
                 let displayPath = user.profile_image;
                 if (displayPath.startsWith('/')) displayPath = displayPath.substring(1);
-                
+
                 // Handle different path formats:
                 // 1. New format: 'assets/uploads/profile_images/...'
                 // 2. Legacy format: 'uploads/profiles/...'
@@ -356,14 +372,16 @@
                 } else {
                     displayPath = '../uploads/profiles/' + displayPath;
                 }
-                
+
                 // Cache buster
                 displayPath += '?v=' + new Date().getTime();
-                
+
                 const imgEl = document.getElementById('displayProfileImg');
                 imgEl.src = displayPath;
-                imgEl.onerror = function() { this.src = '../assets/default-avatar.png'; };
-                
+                imgEl.onerror = function() {
+                    this.src = '../assets/default-avatar.png';
+                };
+
                 // Also update header avatar
                 const headerAvatar = document.querySelector('.header-avatar');
                 if (headerAvatar) {
@@ -378,13 +396,15 @@
             document.getElementById('viewDepartment').textContent = user.department || 'Not Set';
             document.getElementById('viewEmail').textContent = user.email;
             document.getElementById('viewPhone').textContent = user.phone_number || 'Not set';
-            document.getElementById('viewSubsidiary').textContent = user.subsidiary || 'Ensol Group'; 
-            
+            document.getElementById('viewSubsidiary').textContent = user.subsidiary || 'Ensol Group';
+
             // Date
             if (user.created_at) {
                 const date = new Date(user.created_at);
                 document.getElementById('viewJoined').textContent = date.toLocaleDateString('en-GB', {
-                    day: 'numeric', month: 'long', year: 'numeric'
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
                 });
             }
         }
@@ -407,19 +427,19 @@
         }
 
         /* ====== HANDLE EDIT SUBMISSION ====== */
-        document.getElementById('editProfileForm').addEventListener('submit', function (e) {
+        document.getElementById('editProfileForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.textContent = 'Saving...';
             submitBtn.disabled = true;
 
             const jwt = localStorage.getItem('token');
-            
+
             // DEBUG: Check if token exists
             console.log('Token at submit time:', jwt ? 'EXISTS' : 'NULL');
-            
+
             if (!jwt) {
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
@@ -433,53 +453,59 @@
                 });
                 return;
             }
-            
+
             const formData = new FormData(this);
 
             fetch('../../api/v1/user/profile.php', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${jwt}` },
-                body: formData 
-            })
-            .then(r => r.json())
-            .then(data => {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    },
+                    body: formData
+                })
+                .then(r => r.json())
+                .then(data => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
 
-                if (data.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Profile Updated',
-                        text: 'Your details have been saved.',
-                        confirmButtonColor: '#DC1609'
-                    });
-                    
-                    closeEditModal();
-                    renderProfile(data.data);
-                    localStorage.setItem('user', JSON.stringify(data.data));
-                    if (window.initProfileSync) window.initProfileSync(jwt);
-                    
-                } else {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Profile Updated',
+                            text: 'Your details have been saved.',
+                            confirmButtonColor: '#DC1609'
+                        });
+
+                        closeEditModal();
+                        renderProfile(data.data);
+                        localStorage.setItem('user', JSON.stringify(data.data));
+                        if (window.initProfileSync) window.initProfileSync(jwt);
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Update Failed',
+                            text: data.message || 'Something went wrong.',
+                            confirmButtonColor: '#DC1609'
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
                     Swal.fire({
                         icon: 'error',
-                        title: 'Update Failed',
-                        text: data.message || 'Something went wrong.',
-                        confirmButtonColor: '#DC1609'
+                        title: 'Network Error',
+                        text: 'Could not connect to server.'
                     });
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                Swal.fire({ icon: 'error', title: 'Network Error', text: 'Could not connect to server.' });
-            });
+                });
         });
 
         /* ====== CHANGE PASSWORD SUBMISSION ====== */
-        document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.textContent = 'Updating...';
@@ -490,47 +516,52 @@
             const jsonData = Object.fromEntries(formData.entries());
 
             fetch('../../api/v1/user/change-password.php', {
-                method: 'POST',
-                headers: { 
-                    'Authorization': `Bearer ${jwt}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(jsonData)
-            })
-            .then(r => r.json())
-            .then(data => {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonData)
+                })
+                .then(r => r.json())
+                .then(data => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
 
-                if (data.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Password Changed',
-                        text: 'Your password has been updated. Please log in again with your new password.',
-                        confirmButtonColor: '#DC1609'
-                    }).then(() => {
-                        // Force logout after password change
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
-                        window.location.href = '../auth/login.php';
-                    });
-                    closeChangePasswordModal();
-                } else {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Password Changed',
+                            text: 'Your password has been updated. Please log in again with your new password.',
+                            confirmButtonColor: '#DC1609'
+                        }).then(() => {
+                            // Force logout after password change
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            window.location.href = '../auth/login.php';
+                        });
+                        closeChangePasswordModal();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'Failed to update password.',
+                            confirmButtonColor: '#DC1609'
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error',
-                        text: data.message || 'Failed to update password.',
-                        confirmButtonColor: '#DC1609'
+                        title: 'Network Error',
+                        text: 'Could not connect to server.'
                     });
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                Swal.fire({ icon: 'error', title: 'Network Error', text: 'Could not connect to server.' });
-            });
+                });
         });
     </script>
 </body>
+
 </html>

@@ -25,40 +25,56 @@ if (!in_array($role, ['hr', 'admin', 'superadmin'])) {
 
 $db = getDBConnection();
 
+// Group HR (company_id = 1) sees all companies; subsidiary HR sees only their own
+$isGroupHR = ($companyId == 1);
+
+// Helper to build company filter
+$companyFilter = $isGroupHR ? "" : " AND u.company_id = :company_id";
+$companyFilterWhere = $isGroupHR ? "" : " WHERE u.company_id = :company_id";
+$employeeCompanyFilter = $isGroupHR ? "" : " WHERE company_id = :company_id";
+
 try {
-    // 1. Total Leave Applications (all requests from company employees)
+    // 1. Total Leave Applications
     $totalQuery = "SELECT COUNT(*) as total FROM leave_requests lr
                    JOIN users u ON lr.user_id = u.id
-                   WHERE u.company_id = :company_id";
+                   WHERE 1=1" . $companyFilter;
     $stmt = $db->prepare($totalQuery);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->execute();
     $totalApplications = (int)$stmt->fetchColumn();
 
     // 2. Approved Count (status = 'approved_hr')
     $approvedQuery = "SELECT COUNT(*) as approved FROM leave_requests lr
                       JOIN users u ON lr.user_id = u.id
-                      WHERE u.company_id = :company_id AND lr.status = 'approved_hr'";
+                      WHERE lr.status = 'approved_hr'" . $companyFilter;
     $stmt = $db->prepare($approvedQuery);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->execute();
     $totalApproved = (int)$stmt->fetchColumn();
 
     // 3. Denied/Rejected Count
     $deniedQuery = "SELECT COUNT(*) as denied FROM leave_requests lr
                     JOIN users u ON lr.user_id = u.id
-                    WHERE u.company_id = :company_id AND lr.status = 'rejected'";
+                    WHERE lr.status = 'rejected'" . $companyFilter;
     $stmt = $db->prepare($deniedQuery);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->execute();
     $totalDenied = (int)$stmt->fetchColumn();
 
     // 4. Pending (awaiting HR approval)
     $pendingQuery = "SELECT COUNT(*) as pending FROM leave_requests lr
                      JOIN users u ON lr.user_id = u.id
-                     WHERE u.company_id = :company_id AND lr.status = 'approved_supervisor'";
+                     WHERE lr.status = 'approved_supervisor'" . $companyFilter;
     $stmt = $db->prepare($pendingQuery);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->execute();
     $pendingCount = (int)$stmt->fetchColumn();
 
@@ -66,20 +82,23 @@ try {
     $today = date('Y-m-d');
     $onLeaveQuery = "SELECT COUNT(*) as on_leave FROM leave_requests lr
                      JOIN users u ON lr.user_id = u.id
-                     WHERE u.company_id = :company_id 
-                       AND lr.status = 'approved_hr'
+                     WHERE lr.status = 'approved_hr'
                        AND lr.start_date <= :today
-                       AND lr.end_date >= :today";
+                       AND lr.end_date >= :today" . $companyFilter;
     $stmt = $db->prepare($onLeaveQuery);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->bindParam(":today", $today);
     $stmt->execute();
     $onLeaveCount = (int)$stmt->fetchColumn();
 
-    // 6. Total Employees in company
-    $employeeQuery = "SELECT COUNT(*) as total FROM users WHERE company_id = :company_id";
+    // 6. Total Employees
+    $employeeQuery = "SELECT COUNT(*) as total FROM users" . $employeeCompanyFilter;
     $stmt = $db->prepare($employeeQuery);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->execute();
     $totalEmployees = (int)$stmt->fetchColumn();
 
@@ -99,9 +118,7 @@ try {
             "total_employees" => $totalEmployees
         ]
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
 }
-?>

@@ -93,7 +93,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="../auth/login.php" class="nav-item logout-btn">
+                <a href="#" class="nav-item logout-btn" id="supervisorLogoutBtn">
                     <span class="nav-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -204,18 +204,18 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <script>
         const API_BASE = '../../api/v1';
         const token = localStorage.getItem('token');
-        
+
         // Store all requests for filtering
         let allRequests = {
             pending: [],
             accepted: [],
             rejected: []
         };
-        
+
         // Current selected request for modal
         let selectedRequest = null;
 
@@ -237,7 +237,9 @@
         async function fetchStats() {
             try {
                 const response = await fetch(`${API_BASE}/supervisor/stats.php`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 const result = await response.json();
                 if (result.status === 'success') {
@@ -254,7 +256,9 @@
         async function fetchProfile() {
             try {
                 const response = await fetch(`${API_BASE}/user/profile.php`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 const result = await response.json();
                 if (result.status === 'success' && result.data.profile_image) {
@@ -272,21 +276,23 @@
         async function loadPendingRequests() {
             const grid = document.getElementById('approvalGrid');
             // Only show loader if we are on pending tab
-            if(document.querySelector('.approval-tab.active').dataset.tab === 'pending') {
-                 grid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px;">Loading...</div>';
+            if (document.querySelector('.approval-tab.active').dataset.tab === 'pending') {
+                grid.innerHTML = '<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px;">Loading...</div>';
             }
-            
+
             try {
                 const response = await fetch(`${API_BASE}/supervisor/pending.php`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 const data = await response.json();
-                
+
                 if (data.status === 'success') {
                     allRequests.pending = data.data;
                     document.querySelector('.stat-green .stat-value').textContent = data.count || 0;
-                    
-                    if(document.querySelector('.approval-tab.active').dataset.tab === 'pending') {
+
+                    if (document.querySelector('.approval-tab.active').dataset.tab === 'pending') {
                         renderCards('pending');
                     }
                 }
@@ -299,22 +305,24 @@
         async function loadHistoryRequests() {
             try {
                 const response = await fetch(`${API_BASE}/supervisor/history.php`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 const data = await response.json();
-                
+
                 if (data.status === 'success') {
                     // Split into accepted (approved_supervisor/approved_hr) and rejected
                     allRequests.accepted = data.data.filter(r => r.status.includes('approved'));
                     allRequests.rejected = data.data.filter(r => r.status === 'rejected');
-                    
+
                     // If tabs are active, they will auto-refresh on click, but if we are already on a tab...
                     const activeTab = document.querySelector('.approval-tab.active').dataset.tab;
-                    if(activeTab === 'accepted' || activeTab === 'rejected') {
+                    if (activeTab === 'accepted' || activeTab === 'rejected') {
                         renderCards(activeTab);
                     }
                 }
-            } catch(error) {
+            } catch (error) {
                 console.error('Error loading history:', error);
             }
         }
@@ -322,7 +330,11 @@
         // Format date for display
         function formatDate(dateStr) {
             const date = new Date(dateStr);
-            return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            return date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
         }
 
         // Generate avatar URL
@@ -335,14 +347,14 @@
         function renderCards(status) {
             const grid = document.getElementById('approvalGrid');
             const requests = allRequests[status] || [];
-            
+
             if (requests.length === 0) {
                 grid.innerHTML = `<div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--medium-gray);">No ${status} requests found.</div>`;
                 return;
             }
-            
+
             grid.innerHTML = requests.map(req => createCardHTML(req, status)).join('');
-            
+
             // Attach event listeners
             attachCardListeners();
         }
@@ -350,17 +362,17 @@
         // Create card HTML
         function createCardHTML(req, status) {
             const isPending = status === 'pending';
-            const statusBadge = status === 'accepted' 
-                ? '<span class="status-badge" style="background: #dcfce7; color: #16a34a; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">Approved</span>'
-                : status === 'rejected'
-                ? '<span class="status-badge" style="background: #fee2e2; color: #dc2626; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">Rejected</span>'
-                : `<span class="clipboard-icon">
+            const statusBadge = status === 'accepted' ?
+                '<span class="status-badge" style="background: #dcfce7; color: #16a34a; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">Approved</span>' :
+                status === 'rejected' ?
+                '<span class="status-badge" style="background: #fee2e2; color: #dc2626; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">Rejected</span>' :
+                `<span class="clipboard-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                         <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                     </svg>
                    </span>`;
-            
+
             return `
                 <div class="approval-card" data-request-id="${req.id}" data-status="${status}">
                     <div class="approval-card-header">
@@ -410,12 +422,12 @@
             document.querySelectorAll('.btn-approve').forEach(btn => {
                 btn.addEventListener('click', () => handleApprove(btn.dataset.id));
             });
-            
+
             // Reject buttons
             document.querySelectorAll('.btn-reject').forEach(btn => {
                 btn.addEventListener('click', () => handleReject(btn.dataset.id));
             });
-            
+
             // More Info buttons
             document.querySelectorAll('.btn-more-info').forEach(btn => {
                 btn.addEventListener('click', () => showMoreInfo(btn.dataset.id));
@@ -425,7 +437,7 @@
         // Handle approve
         async function handleApprove(requestId) {
             const request = allRequests.pending.find(r => r.id == requestId);
-            
+
             const result = await Swal.fire({
                 title: 'Approve Leave Request?',
                 text: `Approve ${request?.employee_name || 'this'}'s leave request?`,
@@ -436,9 +448,9 @@
                 confirmButtonText: 'Yes, Approve',
                 cancelButtonText: 'Cancel'
             });
-            
+
             if (!result.isConfirmed) return;
-            
+
             try {
                 const response = await fetch(`${API_BASE}/supervisor/approve.php`, {
                     method: 'POST',
@@ -446,11 +458,13 @@
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ request_id: requestId })
+                    body: JSON.stringify({
+                        request_id: requestId
+                    })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.status === 'success') {
                     Swal.fire({
                         icon: 'success',
@@ -458,9 +472,11 @@
                         text: data.message,
                         confirmButtonColor: '#16a34a'
                     });
-                    
-                    // Reload pending requests
+
+                    // Reload pending requests, stats, and history
                     loadPendingRequests();
+                    fetchStats();
+                    loadHistoryRequests();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -483,7 +499,7 @@
         // Handle reject
         async function handleReject(requestId) {
             const request = allRequests.pending.find(r => r.id == requestId);
-            
+
             const result = await Swal.fire({
                 title: 'Reject Leave Request?',
                 text: `Please provide a reason for rejection:`,
@@ -501,9 +517,9 @@
                     }
                 }
             });
-            
+
             if (!result.isConfirmed) return;
-            
+
             try {
                 const response = await fetch(`${API_BASE}/supervisor/reject.php`, {
                     method: 'POST',
@@ -511,14 +527,14 @@
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         request_id: requestId,
                         reason: result.value
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.status === 'success') {
                     Swal.fire({
                         icon: 'success',
@@ -526,9 +542,11 @@
                         text: data.message,
                         confirmButtonColor: '#dc2626'
                     });
-                    
-                    // Reload pending requests
+
+                    // Reload pending requests, stats, and history
                     loadPendingRequests();
+                    fetchStats();
+                    loadHistoryRequests();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -551,15 +569,15 @@
         // Show more info modal
         function showMoreInfo(requestId) {
             const request = allRequests.pending.find(r => r.id == requestId) ||
-                           allRequests.accepted.find(r => r.id == requestId) ||
-                           allRequests.rejected.find(r => r.id == requestId);
-            
+                allRequests.accepted.find(r => r.id == requestId) ||
+                allRequests.rejected.find(r => r.id == requestId);
+
             if (!request) return;
-            
+
             // Update modal content
             const modal = document.getElementById('moreInfoModal');
             const content = modal.querySelector('.employee-modal-content');
-            
+
             content.innerHTML = `
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); text-align: left;">
                     <div>
@@ -596,7 +614,7 @@
                     </div>
                 </div>
             `;
-            
+
             modal.classList.add('active');
         }
 
@@ -613,14 +631,14 @@
         // Tab functionality
         function initTabs() {
             const tabs = document.querySelectorAll('.approval-tab');
-            
+
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
                     tabs.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
-                    
+
                     const status = this.dataset.tab;
-                    
+
                     if (status === 'pending') {
                         renderCards('pending');
                     } else if (status === 'accepted') {
@@ -631,6 +649,26 @@
                 });
             });
         }
+
+        // Logout confirmation
+        document.getElementById('supervisorLogoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Logout',
+                text: 'Are you sure you want to logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Yes, logout'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '../auth/login.php';
+                }
+            });
+        });
     </script>
 </body>
 

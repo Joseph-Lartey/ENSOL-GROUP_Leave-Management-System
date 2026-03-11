@@ -43,16 +43,24 @@ $rejectionReason = $input->reason ?? 'Rejected by HR';
 try {
     $db = getDBConnection();
 
+    // Group HR (company_id = 1) can reject requests from any company
+    $isGroupHR = ($companyId == 1);
+
     // 1. Verify the request exists and belongs to company
     $checkQuery = "SELECT lr.id, lr.status, lr.user_id, u.company_id, u.full_name
                    FROM leave_requests lr
                    JOIN users u ON lr.user_id = u.id
-                   WHERE lr.id = :id AND u.company_id = :company_id";
+                   WHERE lr.id = :id";
+    if (!$isGroupHR) {
+        $checkQuery .= " AND u.company_id = :company_id";
+    }
     $stmt = $db->prepare($checkQuery);
     $stmt->bindParam(":id", $input->request_id);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->execute();
-    
+
     if ($stmt->rowCount() === 0) {
         http_response_code(404);
         echo json_encode(["status" => "error", "message" => "Request not found or access denied."]);
@@ -60,7 +68,7 @@ try {
     }
 
     $request = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     // HR can reject pending or approved_supervisor requests
     if (!in_array($request['status'], ['pending', 'approved_supervisor'])) {
         http_response_code(403);
@@ -77,7 +85,7 @@ try {
     if ($stmt->execute()) {
         http_response_code(200);
         echo json_encode([
-            "status" => "success", 
+            "status" => "success",
             "message" => "Leave request rejected by HR.",
             "employee_name" => $request['full_name']
         ]);
@@ -85,9 +93,7 @@ try {
         http_response_code(500);
         echo json_encode(["status" => "error", "message" => "Failed to reject request."]);
     }
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
 }
-?>

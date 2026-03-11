@@ -39,7 +39,15 @@ function initProfileSync(jwt) {
     fetch('../../api/v1/user/profile.php', {
         headers: { 'Authorization': `Bearer ${jwt}` }
     })
-        .then(r => r.json())
+        .then(r => {
+            if (r.status === 401 || r.status === 403) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = getPathPrefix() + 'auth/login.php';
+                throw new Error('Unauthorized');
+            }
+            return r.json();
+        })
         .then(data => {
             if (data.status === 'success') {
                 const user = data.data;
@@ -232,47 +240,71 @@ function initLogoutModal() {
     const logoutBtn = document.querySelector('.logout-btn');
     const modalOverlay = document.getElementById('logoutModal');
 
-    // IMPORTANT: Use selectors scoped to #logoutModal to avoid conflicts with other modals
-    const cancelBtn = modalOverlay ? modalOverlay.querySelector('.modal-btn.cancel') : null;
-    const confirmBtn = modalOverlay ? modalOverlay.querySelector('.modal-btn.confirm') : null;
+    if (!logoutBtn) return;
 
-    if (logoutBtn && modalOverlay) {
+    if (modalOverlay) {
+        // Use existing HTML modal if present
+        const cancelBtn = modalOverlay.querySelector('.modal-btn.cancel');
+        const confirmBtn = modalOverlay.querySelector('.modal-btn.confirm');
+
         logoutBtn.addEventListener('click', function (e) {
             e.preventDefault();
             modalOverlay.classList.add('active');
         });
 
-        // Cancel button
         if (cancelBtn) {
             cancelBtn.addEventListener('click', function () {
                 modalOverlay.classList.remove('active');
             });
         }
 
-        // Confirm logout
         if (confirmBtn) {
             confirmBtn.addEventListener('click', function () {
-                // Clear Session Data
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-
-                // Optional: Notify user or just redirect
-                // Redirect to login page
                 window.location.href = '../auth/login.php';
             });
         }
 
-        // Close on overlay click
         modalOverlay.addEventListener('click', function (e) {
             if (e.target === modalOverlay) {
                 modalOverlay.classList.remove('active');
             }
         });
 
-        // Close on Escape key
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
                 modalOverlay.classList.remove('active');
+            }
+        });
+    } else if (typeof Swal !== 'undefined') {
+        // Fallback: Use SweetAlert2 if no modal HTML exists
+        logoutBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Logout',
+                text: 'Are you sure you want to logout?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Yes, logout'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '../auth/login.php';
+                }
+            });
+        });
+    } else {
+        // Last resort: simple confirm dialog
+        logoutBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '../auth/login.php';
             }
         });
     }

@@ -31,6 +31,9 @@ $leaveType = isset($_GET['leave_type']) ? $_GET['leave_type'] : null;
 $db = getDBConnection();
 
 try {
+    // Group HR (company_id = 1) sees all companies
+    $isGroupHR = ($companyId == 1);
+
     // Build query with optional filters
     $query = "SELECT 
                 lr.id,
@@ -38,6 +41,7 @@ try {
                 u.full_name as employee_name,
                 u.email as employee_email,
                 u.department,
+                u.position,
                 c.name as company_name,
                 lt.name as leave_type,
                 lr.leave_type_id,
@@ -50,32 +54,38 @@ try {
                 lr.emergency_contact_phone,
                 lr.covered_by,
                 lr.status,
+                lr.rejection_reason,
                 lr.created_at,
                 lr.updated_at
               FROM leave_requests lr
               JOIN users u ON lr.user_id = u.id
               JOIN leave_types lt ON lr.leave_type_id = lt.id
               LEFT JOIN companies c ON u.company_id = c.id
-              WHERE u.company_id = :company_id";
-    
-    $params = [':company_id' => $companyId];
-    
+              WHERE 1=1";
+
+    $params = [];
+
+    if (!$isGroupHR) {
+        $query .= " AND u.company_id = :company_id";
+        $params[':company_id'] = $companyId;
+    }
+
     // Apply filters
     if ($status && $status !== '') {
         $query .= " AND lr.status = :status";
         $params[':status'] = $status;
     }
-    
+
     if ($department && $department !== '') {
         $query .= " AND u.department = :department";
         $params[':department'] = $department;
     }
-    
+
     if ($leaveType && $leaveType !== '') {
         $query .= " AND lt.name = :leave_type";
         $params[':leave_type'] = $leaveType;
     }
-    
+
     $query .= " ORDER BY lr.created_at DESC";
 
     $stmt = $db->prepare($query);
@@ -86,9 +96,14 @@ try {
     $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Get unique departments and leave types for filter dropdowns
-    $deptQuery = "SELECT DISTINCT department FROM users WHERE company_id = :company_id AND department IS NOT NULL";
+    $deptQuery = "SELECT DISTINCT department FROM users WHERE department IS NOT NULL";
+    if (!$isGroupHR) {
+        $deptQuery .= " AND company_id = :company_id";
+    }
     $stmt = $db->prepare($deptQuery);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->execute();
     $departments = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -107,9 +122,7 @@ try {
             "leave_types" => $leaveTypes
         ]
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
 }
-?>

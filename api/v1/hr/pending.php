@@ -26,8 +26,10 @@ if (!in_array($role, ['hr', 'admin', 'superadmin'])) {
 $db = getDBConnection();
 
 try {
+    // Group HR (company_id = 1) sees all companies; subsidiary HR sees only their own
+    $isGroupHR = ($companyId == 1);
+
     // Get requests that have been approved by supervisor, awaiting HR approval
-    // HR can see requests from their company
     $query = "SELECT 
                 lr.id,
                 lr.user_id,
@@ -51,12 +53,17 @@ try {
               JOIN users u ON lr.user_id = u.id
               JOIN leave_types lt ON lr.leave_type_id = lt.id
               LEFT JOIN companies c ON u.company_id = c.id
-              WHERE u.company_id = :company_id 
-                AND lr.status = 'approved_supervisor'
-              ORDER BY lr.created_at ASC";
+              WHERE lr.status = 'approved_supervisor'";
+
+    if (!$isGroupHR) {
+        $query .= " AND u.company_id = :company_id";
+    }
+    $query .= " ORDER BY lr.created_at ASC";
 
     $stmt = $db->prepare($query);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->execute();
     $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -66,9 +73,7 @@ try {
         "data" => $requests,
         "count" => count($requests)
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
 }
-?>

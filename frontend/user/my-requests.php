@@ -85,7 +85,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="nav-item logout-btn">
+                <a href="#" class="nav-item logout-btn" id="userLogoutBtn">
                     <span class="nav-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -141,23 +141,23 @@
             <h2 class="modal-title">Edit Request</h2>
             <form id="editRequestForm" class="dashboard-form">
                 <input type="hidden" id="editRequestId" name="request_id">
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label>Leave Type</label>
                         <select id="editReason" name="reason" class="form-select" required>
-                             <option value="" disabled>Select Type</option>
-                             <option value="annual">Annual Leave</option>
-                             <option value="sick">Sick Leave</option>
-                             <option value="casual">Casual Leave</option>
-                             <option value="maternity">Maternity Leave</option>
-                             <option value="paternity">Paternity Leave</option>
-                             <option value="other">Other/Personal</option>
+                            <option value="" disabled>Select Type</option>
+                            <option value="annual">Annual Leave</option>
+                            <option value="sick">Sick Leave</option>
+                            <option value="casual">Casual Leave</option>
+                            <option value="maternity">Maternity Leave</option>
+                            <option value="paternity">Paternity Leave</option>
+                            <option value="other">Other/Personal</option>
                         </select>
                     </div>
                     <div class="form-group">
-                         <label>Reason / Description</label>
-                         <input type="text" id="editReasonText" class="form-input" placeholder="e.g. Personal Family Matter">
+                        <label>Reason / Description</label>
+                        <input type="text" id="editReasonText" class="form-input" placeholder="e.g. Personal Family Matter">
                     </div>
                 </div>
 
@@ -187,7 +187,7 @@
                         <input type="tel" id="editEmergencyPhone" name="emergencyPhone" class="form-input">
                     </div>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label>Covered By</label>
@@ -207,10 +207,30 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/dashboard.js"></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-             fetchMyRequests();
+            fetchMyRequests();
+
+            // Logout confirmation
+            document.getElementById('userLogoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Logout',
+                    text: 'Are you sure you want to logout?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Yes, logout'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.href = '../auth/login.php';
+                    }
+                });
+            });
         });
 
         function fetchMyRequests() {
@@ -218,41 +238,47 @@
             if (!jwt) return;
 
             fetch('../../api/v1/user/requests.php', {
-                headers: { 'Authorization': `Bearer ${jwt}` }
-            })
-            .then(r => r.json())
-            .then(data => {
-                const tbody = document.getElementById('requestsTableBody');
-                tbody.innerHTML = '';
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    const tbody = document.getElementById('requestsTableBody');
+                    tbody.innerHTML = '';
 
-                if (data.status === 'success' && data.data.length > 0) {
-                    window.userRequests = data.data; 
-                    
-                    data.data.forEach(req => {
-                        const tr = document.createElement('tr');
-                        // Styling matches the image: simple underline, cleaner cells
-                        tr.style.borderBottom = '1px solid #f0f0f0';
-                        
-                        // Status Indicator Color
-                        let statusColor = '#fbbf24'; // Pending (Yellow default)
-                        if (req.status === 'approved') statusColor = '#22c55e';
-                        if (req.status === 'rejected') statusColor = '#ef4444';
-                        if (req.status === 'cancelled') statusColor = '#9ca3af';
+                    if (data.status === 'success' && data.data.length > 0) {
+                        window.userRequests = data.data;
 
-                        tr.innerHTML = `
+                        data.data.forEach(req => {
+                            const tr = document.createElement('tr');
+                            // Styling matches the image: simple underline, cleaner cells
+                            tr.style.borderBottom = '1px solid #f0f0f0';
+
+                            // Status Indicator Color
+                            let statusColor = '#fbbf24'; // Pending (Yellow default)
+                            if (req.status === 'approved') statusColor = '#22c55e';
+                            if (req.status === 'rejected') statusColor = '#ef4444';
+                            if (req.status === 'cancelled') statusColor = '#9ca3af';
+
+                            tr.innerHTML = `
                             <td style="padding: 15px 10px; border-bottom: 1px solid #eee; width: 40%;">
                                 <div style="display: flex; align-items: center; gap: 15px;">
                                     <div class="request-icon-large">
                                         <!-- Icon from Design -->
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                                     </div>
-                                    <div>
-                                        <div style="font-weight: 600; font-size: 16px; color: #1f2937;">${req.leave_type}</div>
-                                        <div style="font-size: 13px; color: #9ca3af; display: flex; align-items: center; gap: 6px; margin-top: 4px;">
-                                            <span style="display:inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: ${statusColor};"></span>
-                                            ${formatStatus(req.status)}
+                                        <div>
+                                            <div style="font-weight: 600; font-size: 16px; color: #1f2937;">${req.leave_type}</div>
+                                            <div style="font-size: 13px; color: #9ca3af; display: flex; align-items: center; gap: 6px; margin-top: 4px;">
+                                                <span style="display:inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: ${statusColor};"></span>
+                                                ${formatStatus(req.status)}
+                                            </div>
+                                            ${req.status === 'rejected' && req.rejection_reason ? 
+                                                `<div style="margin-top: 6px; padding: 6px 10px; background: #fef2f2; border-left: 3px solid #ef4444; border-radius: 4px; font-size: 12px; color: #991b1b;">
+                                                    <strong>Reason:</strong> ${req.rejection_reason}
+                                                </div>` : ''}
                                         </div>
-                                    </div>
                                 </div>
                             </td>
                             <td style="padding: 15px 10px; border-bottom: 1px solid #eee; width: 30%; text-align: center; color: #4b5563; font-weight: 500;">
@@ -269,10 +295,10 @@
                                 </div>
                             </td>
                         `;
-                        tbody.appendChild(tr);
-                    });
-                } else {
-                    tbody.innerHTML = `
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        tbody.innerHTML = `
                         <tr>
                             <td colspan="3" style="text-align: center; padding: 40px; color: #666;">
                                 <div style="margin-bottom: 10px; font-size: 2em;">📭</div>
@@ -280,14 +306,14 @@
                             </td>
                         </tr>
                     `;
-                }
-            })
-            .catch(err => {
-                 console.error(err);
-                 document.getElementById('requestsTableBody').innerHTML = '<tr><td colspan="3" style="color:red; text-align:center;">Failed to load data.</td></tr>';
-            });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('requestsTableBody').innerHTML = '<tr><td colspan="3" style="color:red; text-align:center;">Failed to load data.</td></tr>';
+                });
         }
-        
+
         // ... (Keep existing helpers) ...
 
         // --- Cancel Action ---
@@ -303,8 +329,8 @@
                 confirmButtonText: 'Yes, cancel it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                   Swal.fire('Info', 'Cancellation feature coming soon!', 'info');
-                   // Future: Call API to delete/cancel
+                    Swal.fire('Info', 'Cancellation feature coming soon!', 'info');
+                    // Future: Call API to delete/cancel
                 }
             });
         }
@@ -315,11 +341,11 @@
             if (!req) return;
 
             document.getElementById('editRequestId').value = req.id;
-            
+
             // Map Leave Type Name to Select Value
             // req.leave_type is 'Annual Leave', 'Sick Leave' etc.
             // req.reason is 'personal' etc.
-            
+
             const typeMap = {
                 'annual leave': 'annual',
                 'sick leave': 'sick',
@@ -327,11 +353,11 @@
                 'maternity leave': 'maternity',
                 'paternity leave': 'paternity'
             };
-            
+
             let typeVal = 'other';
             if (req.leave_type) {
                 const lowerType = req.leave_type.toLowerCase();
-                 // Try strict match or partial
+                // Try strict match or partial
                 for (const [key, val] of Object.entries(typeMap)) {
                     if (lowerType.includes(key)) {
                         typeVal = val;
@@ -339,20 +365,20 @@
                     }
                 }
             }
-            
+
             document.getElementById('editReason').value = typeVal;
             document.getElementById('editReasonText').value = req.reason || '';
 
             // Dates
             document.getElementById('editStartDate').value = req.start_date;
             document.getElementById('editEndDate').value = req.end_date;
-            
+
             // Text values
             document.getElementById('editVacationAddress').value = req.vacation_address || '';
             document.getElementById('editEmergencyName').value = req.emergency_contact_name || '';
             document.getElementById('editEmergencyPhone').value = req.emergency_contact_phone || '';
             document.getElementById('editCoveredBy').value = req.covered_by || '';
-            
+
             // Showing modal
             document.getElementById('editRequestModal').classList.add('active');
         }
@@ -372,20 +398,20 @@
             const jwt = localStorage.getItem('token');
             const reasonType = document.getElementById('editReason').value;
             const reasonText = document.getElementById('editReasonText').value; // We might want to combine these?
-            
+
             // If API expects 'reason' to determine type, we send type.
             // If API expects user description, we send text. 
             // Currently API uses 'reason' param to find type.
             // Let's send the Type value as 'reason' to ensure Type updates correctly.
             // But we lose the description? 
             // Ideally we update API to accepting separate fields. For now, let's prioritize Type.
-            
+
             const formData = {
                 request_id: document.getElementById('editRequestId').value,
                 reason: reasonType, // Send 'annual', 'sick' so backend finds type
                 // We might lose 'personal' text if backend overwrites column. 
                 // But leave_type_id is main goal.
-                
+
                 startDate: document.getElementById('editStartDate').value,
                 endDate: document.getElementById('editEndDate').value,
                 vacationAddress: document.getElementById('editVacationAddress').value,
@@ -395,43 +421,48 @@
             };
 
             fetch('../../api/v1/leaves/update.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${jwt}`
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(r => r.json())
-            .then(data => {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                
-                if (data.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Updated!',
-                        text: 'Your request has been updated.',
-                        confirmButtonColor: '#DC1609'
-                    });
-                    closeEditModal();
-                    fetchMyRequests(); // Refresh table
-                } else {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwt}`
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(r => r.json())
+                .then(data => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Updated!',
+                            text: 'Your request has been updated.',
+                            confirmButtonColor: '#DC1609'
+                        });
+                        closeEditModal();
+                        fetchMyRequests(); // Refresh table
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'Update failed.',
+                            confirmButtonColor: '#DC1609'
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error',
-                        text: data.message || 'Update failed.',
-                        confirmButtonColor: '#DC1609'
+                        title: 'Network Error',
+                        text: 'Could not connect to server.'
                     });
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                Swal.fire({ icon: 'error', title: 'Network Error', text: 'Could not connect to server.' });
-            });
+                });
         });
     </script>
 </body>
+
 </html>

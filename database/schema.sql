@@ -70,7 +70,7 @@ CREATE TABLE leave_requests (
     covered_by VARCHAR(100),
     contact_phone VARCHAR(20),
     proof_document VARCHAR(255),
-    status ENUM('pending', 'approved_supervisor', 'approved_hr', 'rejected', 'cancelled') DEFAULT 'pending',
+    status ENUM('pending', 'approved_supervisor', 'approved_hr', 'rejected', 'cancelled', 'expired') DEFAULT 'pending',
     rejection_reason TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,

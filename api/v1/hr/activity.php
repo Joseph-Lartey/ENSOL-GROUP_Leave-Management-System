@@ -28,6 +28,9 @@ $limit = isset($_GET['limit']) ? min((int)$_GET['limit'], 20) : 5;
 $db = getDBConnection();
 
 try {
+    // Group HR (company_id = 1) sees all companies
+    $isGroupHR = ($companyId == 1);
+
     // Get recent leave requests with their status
     $query = "SELECT 
                 lr.id,
@@ -41,19 +44,23 @@ try {
                 lr.updated_at
               FROM leave_requests lr
               JOIN users u ON lr.user_id = u.id
-              JOIN leave_types lt ON lr.leave_type_id = lt.id
-              WHERE u.company_id = :company_id
-              ORDER BY lr.updated_at DESC
-              LIMIT :limit";
+              JOIN leave_types lt ON lr.leave_type_id = lt.id";
+
+    if (!$isGroupHR) {
+        $query .= " WHERE u.company_id = :company_id";
+    }
+    $query .= " ORDER BY lr.updated_at DESC LIMIT :limit";
 
     $stmt = $db->prepare($query);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
     $stmt->execute();
     $activity = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Format the activity for frontend display
-    $formattedActivity = array_map(function($item) {
+    $formattedActivity = array_map(function ($item) {
         // Determine activity type based on status
         $activityType = 'request';
         if ($item['status'] === 'approved_hr' || $item['status'] === 'approved_supervisor') {
@@ -61,7 +68,7 @@ try {
         } else if ($item['status'] === 'rejected') {
             $activityType = 'denied';
         }
-        
+
         return [
             'id' => $item['id'],
             'employee_name' => $item['employee_name'],
@@ -81,9 +88,7 @@ try {
         "data" => $formattedActivity,
         "count" => count($formattedActivity)
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
 }
-?>

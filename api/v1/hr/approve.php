@@ -42,17 +42,25 @@ try {
     $db = getDBConnection();
     $db->beginTransaction();
 
+    // Group HR (company_id = 1) can approve requests from any company
+    $isGroupHR = ($companyId == 1);
+
     // 1. Verify the request exists and is approved by supervisor
     $checkQuery = "SELECT lr.id, lr.status, lr.user_id, lr.leave_type_id, lr.days_requested, 
                           u.company_id, u.full_name
                    FROM leave_requests lr
                    JOIN users u ON lr.user_id = u.id
-                   WHERE lr.id = :id AND u.company_id = :company_id";
+                   WHERE lr.id = :id";
+    if (!$isGroupHR) {
+        $checkQuery .= " AND u.company_id = :company_id";
+    }
     $stmt = $db->prepare($checkQuery);
     $stmt->bindParam(":id", $input->request_id);
-    $stmt->bindParam(":company_id", $companyId);
+    if (!$isGroupHR) {
+        $stmt->bindParam(":company_id", $companyId);
+    }
     $stmt->execute();
-    
+
     if ($stmt->rowCount() === 0) {
         $db->rollBack();
         http_response_code(404);
@@ -61,7 +69,7 @@ try {
     }
 
     $request = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if ($request['status'] !== 'approved_supervisor') {
         $db->rollBack();
         http_response_code(403);
@@ -89,7 +97,7 @@ try {
     $stmt->bindParam(":leave_type_id", $leaveTypeId);
     $stmt->bindParam(":year", $currentYear);
     $stmt->execute();
-    
+
     if ($stmt->rowCount() > 0) {
         // Update existing balance
         $balanceUpdate = "UPDATE leave_balances 
@@ -108,15 +116,13 @@ try {
 
     http_response_code(200);
     echo json_encode([
-        "status" => "success", 
+        "status" => "success",
         "message" => "Leave request approved. Leave balance updated.",
         "employee_name" => $request['full_name'],
         "days_deducted" => $daysRequested
     ]);
-
 } catch (PDOException $e) {
     $db->rollBack();
     http_response_code(500);
     echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
 }
-?>
