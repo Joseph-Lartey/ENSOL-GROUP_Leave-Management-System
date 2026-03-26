@@ -112,6 +112,27 @@ try {
     }
     // If no balance record exists, we don't create one here - that's an admin function
 
+    // 4. Insert audit trail record
+    $auditQuery = "INSERT INTO approvals (leave_request_id, approver_id, action, stage, comments) 
+                   VALUES (:request_id, :approver_id, 'approve', 'hr', :comments)";
+    $stmt = $db->prepare($auditQuery);
+    $stmt->bindParam(":request_id", $input->request_id);
+    $stmt->bindParam(":approver_id", $userId);
+    $approveComment = "Approved by HR";
+    $stmt->bindParam(":comments", $approveComment);
+    $stmt->execute();
+
+    // NOTIFICATIONS
+    // Notify the Employee
+    $nQuery = "INSERT INTO notifications (user_id, title, message, type) VALUES (:uid, :title, :msg, 'success')";
+    $nStmt = $db->prepare($nQuery);
+    $nTitle = "Leave Request Approved";
+    $nMsg = "Your leave request has been fully approved by HR!";
+    $nStmt->bindParam(":uid", $employeeId);
+    $nStmt->bindParam(":title", $nTitle);
+    $nStmt->bindParam(":msg", $nMsg);
+    $nStmt->execute();
+
     $db->commit();
 
     http_response_code(200);

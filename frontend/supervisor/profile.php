@@ -260,6 +260,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/dashboard.js"></script>
     <script>
         // Extended Profile Management
@@ -324,13 +325,12 @@
             .then(r => r.json())
             .then(res => {
                 if(res.status === 'success') {
-                    alert('Profile updated successfully!');
-                    location.reload();
+                    Swal.fire({ icon: 'success', title: 'Updated', text: 'Profile updated successfully!', timer: 1800, showConfirmButton: false }).then(() => location.reload());
                 } else {
-                    alert('Error: ' + res.message);
+                    Swal.fire('Error', res.message, 'error');
                 }
             })
-            .catch(err => alert('Update failed.'));
+            .catch(err => Swal.fire('Error', 'Update failed.', 'error'));
         });
 
         // Password Modal
@@ -349,7 +349,7 @@
             const conf = document.getElementById('confirmPassword').value;
 
             if(newP !== conf) {
-                alert('New passwords do not match');
+                Swal.fire('Mismatch', 'New passwords do not match.', 'warning');
                 return;
             }
 
@@ -365,11 +365,11 @@
             .then(r => r.json())
             .then(res => {
                 if(res.status === 'success') {
-                    alert('Password changed successfully');
+                    Swal.fire({ icon: 'success', title: 'Done', text: 'Password changed successfully.', timer: 1800, showConfirmButton: false });
                     closePasswordModal();
                     document.getElementById('changePasswordForm').reset();
                 } else {
-                    alert('Error: ' + res.message);
+                    Swal.fire('Error', res.message, 'error');
                 }
             });
         });

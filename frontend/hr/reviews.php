@@ -63,6 +63,18 @@
                     </span>
                     <span class="nav-text">Reviews</span>
                 </a>
+
+                <a href="disputes.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Disputes</span>
+                </a>
                 <a href="apply-leave.php" class="nav-item">
                     <span class="nav-icon">
                         <svg viewBox="0 0 24 24">
@@ -202,6 +214,11 @@
                     <p class="employee-modal-info"><strong>Emergency Contact:</strong> <span id="reviewEmergency">--</span></p>
                     <p class="employee-modal-info"><strong>Covered By:</strong> <span id="reviewCoveredBy">--</span></p>
                 </div>
+                
+                <div style="margin-top: 15px; padding: 15px; background: #f0fdf4; border-radius: 10px;">
+                    <p class="employee-modal-info"><strong>Supervisor Approval:</strong> <span id="reviewSupApprover">Pending/N/A</span></p>
+                    <p class="employee-modal-info"><strong>HR Decision By:</strong> <span id="reviewHrApprover">Pending/N/A</span></p>
+                </div>
             </div>
         </div>
     </div>
@@ -312,7 +329,7 @@
                     <td>${review.leave_type || 'N/A'}</td>
                     <td>${formatDate(review.start_date)} - ${formatDate(review.end_date)}</td>
                     <td>${getStatusBadge(review.status)}</td>
-                    <td><button class="btn-more-info-table" onclick='openReviewModal(${JSON.stringify(review)})'>More Info</button></td>
+                    <td><button class="btn-more-info-table" onclick="openReviewModal(${review.id})">More Info</button></td>
                 </tr>
             `).join('');
         }
@@ -337,7 +354,10 @@
         }
 
         // Open Review Modal
-        function openReviewModal(review) {
+        function openReviewModal(id) {
+            const review = allReviews.find(r => r.id == id);
+            if (!review) return;
+
             document.getElementById('reviewAvatar').src = 
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(review.employee_name)}&background=dc2626&color=fff&size=80`;
             document.getElementById('reviewName').textContent = review.employee_name || 'Unknown';
@@ -354,6 +374,12 @@
             document.getElementById('reviewEmergency').textContent = 
                 review.emergency_contact_name ? `${review.emergency_contact_name} (${review.emergency_contact_phone || 'N/A'})` : 'N/A';
             document.getElementById('reviewCoveredBy').textContent = review.covered_by || 'N/A';
+            
+            // Approver Info
+            document.getElementById('reviewSupApprover').textContent = 
+                review.supervisor_approved_by ? `${review.supervisor_approved_by} (${review.supervisor_company || 'N/A'})` : 'Pending/N/A';
+            document.getElementById('reviewHrApprover').textContent = 
+                review.hr_approved_by ? `${review.hr_approved_by} (${review.hr_company || 'N/A'})` : 'Pending/N/A';
 
             document.getElementById('reviewModal').classList.add('active');
         }

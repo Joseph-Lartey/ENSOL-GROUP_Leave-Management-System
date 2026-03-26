@@ -22,6 +22,9 @@ function checkAuthAndLoadData() {
     // Initialize Global Profile Sync
     initProfileSync(jwt);
 
+    // Fetch Global Notification Badge
+    updateGlobalNotificationBadge(jwt);
+
     // Load Data
     loadDashboardStats();
     loadRecentRequests();
@@ -109,6 +112,30 @@ function updateAvatarImages(src) {
             this.src = getPathPrefix() + 'assets/default-avatar.png';
         };
     });
+}
+
+function updateGlobalNotificationBadge(jwt) {
+    fetch(getPathPrefix() + '../api/v1/user/notifications.php?limit=1', {
+        headers: { 'Authorization': `Bearer ${jwt}` }
+    })
+        .then(r => {
+            if (!r.ok) return null;
+            return r.json();
+        })
+        .then(data => {
+            if (data && data.status === 'success' && data.unread_count > 0) {
+                document.querySelectorAll('.notification-badge').forEach(badge => {
+                    badge.textContent = data.unread_count; /* Insert number */
+                    badge.style.display = 'flex';
+                });
+            } else {
+                document.querySelectorAll('.notification-badge').forEach(badge => {
+                    badge.textContent = '';
+                    badge.style.display = 'none';
+                });
+            }
+        })
+        .catch(err => console.error('Error auto-fetching notifications:', err));
 }
 
 function getPathPrefix() {
@@ -298,10 +325,26 @@ function initLogoutModal() {
             });
         });
     } else {
-        // Last resort: simple confirm dialog
+        // Fallback: SweetAlert confirm dialog
         logoutBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            if (confirm('Are you sure you want to logout?')) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Log Out?',
+                    text: 'Are you sure you want to log out?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626',
+                    confirmButtonText: 'Yes, Logout',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.href = '../auth/login.php';
+                    }
+                });
+            } else {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 window.location.href = '../auth/login.php';
@@ -363,7 +406,9 @@ function validateApplyLeaveForm(form) {
         if (new Date(endDate.value) < new Date(startDate.value)) {
             isValid = false;
             endDate.classList.add('error');
-            alert('End date must be after start date');
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Invalid Date', 'End date must be after start date.', 'error');
+            }
         }
     }
 
@@ -372,18 +417,24 @@ function validateApplyLeaveForm(form) {
 
 /* ====== DELETE REQUEST ====== */
 function deleteRequest(requestId) {
-    if (confirm('Are you sure you want to delete this request?')) {
-        // In a real app, this would make an API call
-        console.log('Deleting request:', requestId);
-
-        // Remove the element from DOM
-        const requestElement = document.querySelector(`[data-request-id="${requestId}"]`);
-        if (requestElement) {
-            requestElement.style.animation = 'fadeOut 0.3s ease forwards';
-            setTimeout(() => {
-                requestElement.remove();
-            }, 300);
-        }
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Delete Request?',
+            text: 'Are you sure you want to delete this request?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            confirmButtonText: 'Yes, Delete',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const requestElement = document.querySelector(`[data-request-id="${requestId}"]`);
+                if (requestElement) {
+                    requestElement.style.animation = 'fadeOut 0.3s ease forwards';
+                    setTimeout(() => { requestElement.remove(); }, 300);
+                }
+            }
+        });
     }
 }
 
@@ -502,7 +553,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Simulate API call
             setTimeout(() => {
                 submitBtn.classList.remove('loading');
-                alert('Contest submitted for review!');
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({ icon: 'success', title: 'Submitted', text: 'Contest submitted for review!', timer: 1800, showConfirmButton: false });
+                }
                 this.reset();
             }, 1500);
         });

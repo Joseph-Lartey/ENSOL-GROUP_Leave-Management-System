@@ -56,11 +56,32 @@ try {
                 lr.status,
                 lr.rejection_reason,
                 lr.created_at,
-                lr.updated_at
+                lr.updated_at,
+                sup_approval.approver_name as supervisor_approved_by,
+                sup_approval.approver_company as supervisor_company,
+                sup_approval.created_at as supervisor_approved_at,
+                hr_approval.approver_name as hr_approved_by,
+                hr_approval.approver_company as hr_company,
+                hr_approval.created_at as hr_approved_at,
+                hr_approval.comments as hr_comments
               FROM leave_requests lr
               JOIN users u ON lr.user_id = u.id
               JOIN leave_types lt ON lr.leave_type_id = lt.id
               LEFT JOIN companies c ON u.company_id = c.id
+              LEFT JOIN (
+                SELECT a.leave_request_id, au.full_name as approver_name, ac.name as approver_company, a.created_at
+                FROM approvals a
+                JOIN users au ON a.approver_id = au.id
+                LEFT JOIN companies ac ON au.company_id = ac.id
+                WHERE a.stage = 'supervisor' AND a.action = 'approve'
+              ) sup_approval ON sup_approval.leave_request_id = lr.id
+              LEFT JOIN (
+                SELECT a.leave_request_id, au.full_name as approver_name, ac.name as approver_company, a.created_at, a.comments, a.action
+                FROM approvals a
+                JOIN users au ON a.approver_id = au.id
+                LEFT JOIN companies ac ON au.company_id = ac.id
+                WHERE a.stage = 'hr'
+              ) hr_approval ON hr_approval.leave_request_id = lr.id
               WHERE 1=1";
 
     $params = [];

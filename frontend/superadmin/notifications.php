@@ -126,7 +126,7 @@
 
     <script src="../assets/js/dashboard.js"></script>
     <script>
-        const API_BASE = '../api/v1/superadmin';
+        const API_BASE = '../../api/v1/superadmin';
         let currentFilter = 'all';
 
         document.addEventListener('DOMContentLoaded', async () => {

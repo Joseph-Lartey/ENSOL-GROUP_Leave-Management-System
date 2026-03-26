@@ -137,6 +137,7 @@
         </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/dashboard.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -171,24 +172,33 @@
         });
 
         function deleteRequest(id) {
-            if(!confirm('Cancel request?')) return;
-            const token = localStorage.getItem('token');
-            fetch('../../api/v1/leaves/cancel.php', {
-                method: 'POST',
-                headers: { 
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ request_id: id })
-            })
-            .then(r => r.json())
-            .then(d => {
-                if(d.status === 'success') {
-                    alert('Cancelled');
-                    location.reload();
-                } else {
-                    alert('Failed: ' + d.message);
-                }
+            Swal.fire({
+                title: 'Cancel Request?',
+                text: 'Are you sure you want to cancel this leave request?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626',
+                confirmButtonText: 'Yes, Cancel It',
+                cancelButtonText: 'No, Keep It'
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+                const token = localStorage.getItem('token');
+                fetch('../../api/v1/leaves/cancel.php', {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ request_id: id })
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if(d.status === 'success') {
+                        Swal.fire({ icon: 'success', title: 'Cancelled', text: 'Leave request cancelled.', timer: 1500, showConfirmButton: false }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Failed', d.message, 'error');
+                    }
+                });
             });
         }
     </script>

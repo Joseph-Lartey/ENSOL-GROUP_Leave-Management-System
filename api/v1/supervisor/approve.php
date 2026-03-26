@@ -78,6 +78,46 @@ try {
     $stmt->bindParam(":id", $input->request_id);
 
     if ($stmt->execute()) {
+        // Insert audit trail record
+        $auditQuery = "INSERT INTO approvals (leave_request_id, approver_id, action, stage, comments) 
+                       VALUES (:request_id, :approver_id, 'approve', 'supervisor', :comments)";
+        $auditStmt = $db->prepare($auditQuery);
+        $auditStmt->bindParam(":request_id", $input->request_id);
+        $auditStmt->bindParam(":approver_id", $userId);
+        $approveComment = "Approved by Supervisor";
+        $auditStmt->bindParam(":comments", $approveComment);
+        $auditStmt->execute();
+
+        // NOTIFICATIONS
+        // 1. Notify the Employee
+        $nQuery = "INSERT INTO notifications (user_id, title, message, type) VALUES (:uid, :title, :msg, 'success')";
+        $nStmt = $db->prepare($nQuery);
+        $nTitle = "Supervisor Approved";
+        $nMsg = "Your leave request has been approved by your supervisor. It is currently pending HR approval.";
+        $nStmt->bindParam(":uid", $request['user_id']);
+        $nStmt->bindParam(":title", $nTitle);
+        $nStmt->bindParam(":msg", $nMsg);
+        $nStmt->execute();
+
+        // 2. Notify HR
+        $hrQuery = "SELECT id FROM users WHERE role IN ('hr', 'admin') AND company_id = :cid";
+        $hrStmt = $db->prepare($hrQuery);
+        $hrStmt->bindParam(":cid", $request['company_id']);
+        $hrStmt->execute();
+        $hrUsers = $hrStmt->fetchAll(PDO::FETCH_COLUMN);
+
+        $empName = $request['full_name'];
+        foreach ($hrUsers as $hrId) {
+            $nQuery = "INSERT INTO notifications (user_id, title, message, type) VALUES (:uid, :title, :msg, 'info')";
+            $nStmt = $db->prepare($nQuery);
+            $nTitle = "Leave Request Requires Final Approval";
+            $nMsg = "$empName has a leave request that is supervisor-approved and ready for final HR review.";
+            $nStmt->bindParam(":uid", $hrId);
+            $nStmt->bindParam(":title", $nTitle);
+            $nStmt->bindParam(":msg", $nMsg);
+            $nStmt->execute();
+        }
+
         http_response_code(200);
         echo json_encode([
             "status" => "success", 

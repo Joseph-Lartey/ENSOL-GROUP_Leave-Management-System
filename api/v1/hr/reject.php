@@ -83,6 +83,26 @@ try {
     $stmt->bindParam(":reason", $rejectionReason);
 
     if ($stmt->execute()) {
+        // Insert audit trail record
+        $auditQuery = "INSERT INTO approvals (leave_request_id, approver_id, action, stage, comments) 
+                       VALUES (:request_id, :approver_id, 'reject', 'hr', :comments)";
+        $auditStmt = $db->prepare($auditQuery);
+        $auditStmt->bindParam(":request_id", $input->request_id);
+        $auditStmt->bindParam(":approver_id", $userId);
+        $auditStmt->bindParam(":comments", $rejectionReason);
+        $auditStmt->execute();
+
+        // NOTIFICATIONS
+        // Notify the Employee
+        $nQuery = "INSERT INTO notifications (user_id, title, message, type) VALUES (:uid, :title, :msg, 'error')";
+        $nStmt = $db->prepare($nQuery);
+        $nTitle = "Leave Request Rejected";
+        $nMsg = "Your leave request was rejected by HR. Reason: " . $rejectionReason;
+        $nStmt->bindParam(":uid", $request['user_id']);
+        $nStmt->bindParam(":title", $nTitle);
+        $nStmt->bindParam(":msg", $nMsg);
+        $nStmt->execute();
+
         http_response_code(200);
         echo json_encode([
             "status" => "success",

@@ -142,7 +142,7 @@
 
     <script src="../assets/js/dashboard.js"></script>
     <script>
-        const API_BASE = '../api/v1';
+        const API_BASE = '../../api/v1';
 
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');

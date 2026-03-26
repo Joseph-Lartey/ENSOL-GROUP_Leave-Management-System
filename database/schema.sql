@@ -73,6 +73,7 @@ CREATE TABLE leave_requests (
     status ENUM('pending', 'approved_supervisor', 'approved_hr', 'rejected', 'cancelled', 'expired') DEFAULT 'pending',
     rejection_reason TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (leave_type_id) REFERENCES leave_types(id) ON DELETE CASCADE
 );

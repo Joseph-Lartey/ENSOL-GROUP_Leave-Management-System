@@ -83,13 +83,14 @@ try {
     $onLeaveQuery = "SELECT COUNT(*) as on_leave FROM leave_requests lr
                      JOIN users u ON lr.user_id = u.id
                      WHERE lr.status = 'approved_hr'
-                       AND lr.start_date <= :today
-                       AND lr.end_date >= :today" . $companyFilter;
+                       AND lr.start_date <= :today_start
+                       AND lr.end_date >= :today_end" . $companyFilter;
     $stmt = $db->prepare($onLeaveQuery);
     if (!$isGroupHR) {
         $stmt->bindParam(":company_id", $companyId);
     }
-    $stmt->bindParam(":today", $today);
+    $stmt->bindParam(":today_start", $today);
+    $stmt->bindParam(":today_end", $today);
     $stmt->execute();
     $onLeaveCount = (int)$stmt->fetchColumn();
 

@@ -103,6 +103,50 @@ try {
     $stmt->bindParam(":status", $initialStatus);
     
     if ($stmt->execute()) {
+        $leaveRequestId = $db->lastInsertId();
+
+        // Fetch user's name and supervisor_id to send notifications
+        $uQuery = "SELECT full_name, supervisor_id, company_id FROM users WHERE id = :uid";
+        $uStmt = $db->prepare($uQuery);
+        $uStmt->bindParam(":uid", $userId);
+        $uStmt->execute();
+        $employee = $uStmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($employee) {
+            $empName = $employee['full_name'];
+            
+            if ($initialStatus === 'pending' && $employee['supervisor_id']) {
+                // Notify Supervisor
+                $nQuery = "INSERT INTO notifications (user_id, title, message, type) VALUES (:uid, :title, :msg, 'info')";
+                $nStmt = $db->prepare($nQuery);
+                $nTitle = "New Leave Request";
+                $nMsg = "$empName has submitted a new leave application that requires your approval.";
+                $nStmt->bindParam(":uid", $employee['supervisor_id']);
+                $nStmt->bindParam(":title", $nTitle);
+                $nStmt->bindParam(":msg", $nMsg);
+                $nStmt->execute();
+            } else if ($initialStatus === 'approved_supervisor') {
+                // Notify HR directly (since it skipped supervisor)
+                // Find HR users in the same company
+                $hrQuery = "SELECT id FROM users WHERE role IN ('hr', 'admin') AND company_id = :cid";
+                $hrStmt = $db->prepare($hrQuery);
+                $hrStmt->bindParam(":cid", $employee['company_id']);
+                $hrStmt->execute();
+                $hrUsers = $hrStmt->fetchAll(PDO::FETCH_COLUMN);
+
+                foreach ($hrUsers as $hrId) {
+                    $nQuery = "INSERT INTO notifications (user_id, title, message, type) VALUES (:uid, :title, :msg, 'info')";
+                    $nStmt = $db->prepare($nQuery);
+                    $nTitle = "Leave Request Requires Final Approval";
+                    $nMsg = "$empName has submitted a leave request that requires HR final approval.";
+                    $nStmt->bindParam(":uid", $hrId);
+                    $nStmt->bindParam(":title", $nTitle);
+                    $nStmt->bindParam(":msg", $nMsg);
+                    $nStmt->execute();
+                }
+            }
+        }
+
         http_response_code(201);
         $message = "Leave request submitted successfully.";
         if ($initialStatus === 'approved_supervisor') {

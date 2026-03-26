@@ -208,6 +208,29 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- Past Disputes -->
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3 class="card-title">Past Disputes History</h3>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb; text-align: left;">
+                                    <th style="padding: 12px 16px; font-weight: 600; color: var(--medium-gray); font-size: 13px;">Leave Type</th>
+                                    <th style="padding: 12px 16px; font-weight: 600; color: var(--medium-gray); font-size: 13px;">Claim</th>
+                                    <th style="padding: 12px 16px; font-weight: 600; color: var(--medium-gray); font-size: 13px;">Status</th>
+                                    <th style="padding: 12px 16px; font-weight: 600; color: var(--medium-gray); font-size: 13px;">HR Notes</th>
+                                    <th style="padding: 12px 16px; font-weight: 600; color: var(--medium-gray); font-size: 13px;">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pastDisputesBody">
+                                <tr><td colspan="5" style="text-align: center; padding: 20px; color: #888;">Loading history...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -250,8 +273,98 @@
                 }
             })
             .catch(console.error);
+
+            // Fetch past disputes
+            fetch('../../api/v1/user/dispute.php', {
+                headers: { 'Authorization': `Bearer ${jwt}` }
+            })
+            .then(r => r.json())
+            .then(data => {
+                const tbody = document.getElementById('pastDisputesBody');
+                if (data.status === 'success') {
+                    if (data.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #888;">No past disputes found.</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = data.data.map(d => {
+                        let statusColor = d.status === 'pending' ? '#d97706' : (d.status === 'resolved' ? '#16a34a' : '#dc2626');
+                        let statusBg = d.status === 'pending' ? '#fef3c7' : (d.status === 'resolved' ? '#dcfce7' : '#fee2e2');
+                        return `
+                            <tr style="border-bottom: 1px solid #e5e7eb;">
+                                <td style="padding: 12px 16px; text-transform: capitalize;">${d.leave_type}</td>
+                                <td style="padding: 12px 16px;">S: ${d.current_stat} \u2192 E: <strong style="color:#16a34a">${d.correct_stat}</strong></td>
+                                <td style="padding: 12px 16px;">
+                                    <span style="background:${statusBg}; color:${statusColor}; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">
+                                        ${d.status.charAt(0).toUpperCase() + d.status.slice(1)}
+                                    </span>
+                                </td>
+                                <td style="padding: 12px 16px; font-size: 13px; color: #4b5563; max-width: 250px;">${d.admin_comments || '<em style="color:#9ca3af">None</em>'}</td>
+                                <td style="padding: 12px 16px; font-size: 13px; color: #6b7280;">${new Date(d.created_at).toLocaleDateString()}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            })
+            .catch(console.error);
+
+            // Handle Contest Leave Form Submission
+            const contestForm = document.getElementById('contestForm');
+            if (contestForm) {
+                contestForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    
+                    try {
+                        submitBtn.innerHTML = 'Submitting...';
+                        submitBtn.disabled = true;
+                        
+                        const payload = {
+                            leave_type: document.getElementById('leaveType').value,
+                            current_stat: parseFloat(document.getElementById('currentStat').value),
+                            correct_stat: parseFloat(document.getElementById('correctStat').value),
+                            comments: document.getElementById('comments').value
+                        };
+                        
+                        const response = await fetch('../../api/v1/user/dispute.php', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${jwt}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok && data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: data.message || 'Leave contest submitted successfully. HR will review it.',
+                                confirmButtonColor: '#16a34a'
+                            });
+                            contestForm.reset();
+                        } else {
+                            throw new Error(data.message || 'Failed to submit contest');
+                        }
+                    } catch (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: error.message,
+                            confirmButtonColor: '#dc2626'
+                        });
+                    } finally {
+                        submitBtn.innerHTML = originalBtnText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

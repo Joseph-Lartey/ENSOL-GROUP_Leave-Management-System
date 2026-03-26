@@ -63,6 +63,18 @@
                     </span>
                     <span class="nav-text">Reviews</span>
                 </a>
+
+                <a href="disputes.php" class="nav-item">
+                    <span class="nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Disputes</span>
+                </a>
                 <a href="apply-leave.php" class="nav-item">
                     <span class="nav-icon">
                         <svg viewBox="0 0 24 24">
@@ -147,6 +159,13 @@
                             <span class="stat-sublabel">Awaiting HR approval</span>
                         </div>
                     </div>
+                    <div class="stat-card" style="border-left: 4px solid #dc2626;">
+                        <div class="stat-info">
+                            <span class="stat-label">Rejected requests</span>
+                            <span class="stat-value" id="statRejected">--</span>
+                            <span class="stat-sublabel">Denied by HR</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Approval Tabs -->
@@ -219,6 +238,7 @@
                             document.getElementById('statTotal').textContent = result.data.total_applications;
                             document.getElementById('statApproved').textContent = result.data.total_approved;
                             document.getElementById('statPending').textContent = result.data.pending_count;
+                            document.getElementById('statRejected').textContent = result.data.total_denied;
                         }
                     } catch (error) {
                         console.error('Error fetching stats:', error);
@@ -307,11 +327,7 @@
                         if (data.status === 'success') {
                             allRequests.pending = data.data;
 
-                            // Update stat card
-                            const statCard = document.querySelector('.stat-green .stat-value');
-                            if (statCard) {
-                                statCard.textContent = data.count || 0;
-                            }
+                            // Stats are handled by fetchStats() — no override here
 
                             renderCards('pending');
                         } else {
@@ -608,9 +624,15 @@
                         <span style="font-size: var(--text-xs); color: var(--medium-gray);">Submitted</span>
                         <p style="font-weight: 600; margin-top: 4px;">${formatDate(request.created_at)}</p>
                     </div>
-                    <div style="grid-column: 1 / -1;">
-                        <span style="font-size: var(--text-xs); color: var(--medium-gray);">Supervisor Approved On</span>
-                        <p style="font-weight: 600; margin-top: 4px; color: #16a34a;">${formatDate(request.updated_at)}</p>
+                    <div style="grid-column: 1 / -1; margin-top: 10px; padding: 12px; background: #eff6ff; border-radius: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <span style="font-size: var(--text-xs); color: #1e40af;">Supervisor Approval</span>
+                            <p style="font-weight: 600; margin-top: 4px; font-size: 13px;">${request.supervisor_approved_by ? request.supervisor_approved_by + ' (' + (request.supervisor_company || '') + ')' : 'Pending/N/A'}</p>
+                        </div>
+                        <div>
+                            <span style="font-size: var(--text-xs); color: #1e40af;">HR Decision By</span>
+                            <p style="font-weight: 600; margin-top: 4px; font-size: 13px;">${request.hr_approved_by ? request.hr_approved_by + ' (' + (request.hr_company || '') + ')' : 'Pending/N/A'}</p>
+                        </div>
                     </div>
                 </div>
             `;

@@ -210,13 +210,22 @@
 
 .notification-badge {
     position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 10px;
-    height: 10px;
+    top: 0px;
+    right: 0px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px; /* Spacing for 2+ digits */
     background-color: var(--vivid-red);
-    border-radius: 50%;
+    color: var(--white);
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
     border: 2px solid var(--white);
+    box-sizing: border-box;
+    display: none; /* Hidden by default until JS confirms unread */
 }
 
 .header-avatar {

@@ -216,6 +216,7 @@
         </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/dashboard.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -244,15 +245,15 @@
                     .then(r => r.json())
                     .then(res => {
                         if(res.status === 'success') {
-                            alert('Contest submitted successfully.');
+                            Swal.fire({ icon: 'success', title: 'Submitted', text: 'Contest submitted successfully.', timer: 1800, showConfirmButton: false });
                             form.reset();
                         } else {
-                            alert('Error: ' + res.message);
+                            Swal.fire('Error', res.message, 'error');
                         }
                     })
                     .catch(err => {
                         console.error(err);
-                        alert('An error occurred.');
+                        Swal.fire('Error', 'An error occurred.', 'error');
                     });
                 });
             }

@@ -290,7 +290,7 @@
 
                 if (data.status === 'success') {
                     allRequests.pending = data.data;
-                    document.querySelector('.stat-green .stat-value').textContent = data.count || 0;
+                    // Stats are handled by fetchStats() — no override here
 
                     if (document.querySelector('.approval-tab.active').dataset.tab === 'pending') {
                         renderCards('pending');
